@@ -165,8 +165,6 @@ paths:
       tags: [ Users ]
       summary: Create new user if doesn't exist
       operationId: createNewUser
-      security:
-        - bearerAuth: [ ]
       requestBody:
         required: true
         content:
