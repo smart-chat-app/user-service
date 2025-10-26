@@ -166,12 +166,12 @@
             <artifactId>mongodb</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
+       <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.mapstruct/mapstruct &ndash;&gt;
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>1.6.3</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <build>
@@ -216,7 +216,7 @@
                 </executions>
             </plugin>
 
-            <plugin>
+           <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
@@ -229,7 +229,7 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
-            </plugin>
+            </plugin>-->
 
             <!-- OpenAPI generator (plugin; not a dependency) -->
             <plugin>
@@ -254,8 +254,16 @@
                                 <delegatePattern>true</delegatePattern>
                                 <useBeanValidation>true</useBeanValidation>
                                 <useTags>true</useTags>
+                                <generateBuilders>true</generateBuilders>
+
+                                <!-- Turn on Lombok -->
+                                <useLombok>true</useLombok>
+
+                         <!--       &lt;!&ndash; Add constructor annotations to all models &ndash;&gt;
+                                <additionalModelTypeAnnotations>
+                                    @lombok.AllArgsConstructor
+                                </additionalModelTypeAnnotations>-->
                                 <!-- NOTE: no <reactive>true</reactive> since you want non-reactive APIs -->
-                                <nullableReferenceTypes>true</nullableReferenceTypes>
                             </configOptions>
                             <!-- Optional: generate into target to avoid polluting sources -->
                             <!--

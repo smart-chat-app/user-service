@@ -1,5 +1,7 @@
 package com.smartchat.users.persistance.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -9,6 +11,8 @@ import java.time.Instant;
 
 @Setter
 @Getter
+@Builder
+@AllArgsConstructor
 @Document(collection = "users")
 public class UserEntity {
     @Id
