@@ -1,27 +1,22 @@
-version: "3.9"
-
 services:
   users-service:
-    build: ./
+    build: .
     image: users-service:local
     container_name: users-service
     ports:
-      - "8090:8090"   # host:container
+      - "8090:8090"             # host:container
     environment:
+      SERVER_PORT: 8090
       SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/usersdb
-
-      # Choose one of the two lines below (prefer issuer-uri):
       ISSUER_URI: http://keycloak:8080/realms/chat-local
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/chat-local/protocol/openid-connect/certs
-
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8088/realms/chat-local/protocol/openid-connect/certs
       SPRING_APPLICATION_NAME: users-service
-      # If you’re running MVC controllers with WebFlux on classpath:
       SPRING_MAIN_WEB-APPLICATION-TYPE: servlet
     depends_on:
       mongo:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-qO", "-", "http://localhost:8080/users/health"]
+      test: ["CMD", "wget", "-qO", "-", "http://localhost:8090/users/health"]
       interval: 10s
       timeout: 3s
       retries: 10
@@ -36,9 +31,9 @@ services:
     volumes:
       - mongo_data:/data/db
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: ["CMD-SHELL", "timeout 2 bash -lc '</dev/tcp/localhost/27017' && echo ok || exit 1"]
       interval: 10s
-      timeout: 5s
+      timeout: 3s
       retries: 10
 
   mongo-express:
@@ -50,7 +45,7 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: admin
     ports:
-      - "8085:8081"     # default mongo-express exposes 8081 internally
+      - "8085:8081"
     depends_on:
       mongo:
         condition: service_healthy
@@ -58,22 +53,19 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2185
-    ports:
-      - "2185:2185"
+      ZOOKEEPER_CLIENT_PORT: 2182
+    ports: [ "2182:2182" ]
 
   kafka:
     image: confluentinc/cp-kafka:latest
-    depends_on:
-      - zookeeper
+    depends_on: [ zookeeper ]
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9094
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    ports:
-      - "9092:9092"
+    ports: [ "9094:9094" ]
 
 volumes:
   mongo_data:
