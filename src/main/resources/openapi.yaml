@@ -154,6 +154,32 @@ paths:
           content:
             application/json:
               schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /users/create:
+    post:
+      tags: [ Users ]
+      summary: Create new user if doesn't exist
+      operationId: createNewUser
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+
+      responses:
+        '200':
+          description: Pre-signed upload information
+          content:
+            application/json:
+              schema:
                 $ref: '#/components/schemas/PresignResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -219,6 +245,7 @@ components:
         updatedAt:
           type: string
           format: date-time
+
     UserPublic:
       allOf:
         - $ref: '#/components/schemas/User'
@@ -240,6 +267,7 @@ components:
       example:
         displayName: "Alex"
         bio: "Grappler | Java dev"
+
     PresignRequest:
       type: object
       required: [contentType]

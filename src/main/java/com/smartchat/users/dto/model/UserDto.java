@@ -1,4 +1,4 @@
-package com.smartchat.users.dto;
+package com.smartchat.users.dto.model;
 
 public class UserDto {
     public String userId;

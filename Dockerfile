@@ -8,5 +8,5 @@ RUN useradd -ms /bin/bash app
 USER app
 WORKDIR /app
 COPY --from=build /workspace/target/users-service-*.jar app.jar
-EXPOSE 8080
+EXPOSE 8090
 ENTRYPOINT ["java","-jar","/app/app.jar"]

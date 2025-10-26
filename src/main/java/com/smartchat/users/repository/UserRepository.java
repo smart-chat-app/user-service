@@ -1,10 +1,10 @@
 package com.smartchat.users.repository;
 
-import com.smartchat.users.domain.UserDocument;
+import com.smartchat.users.persistance.model.UserEntity;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Mono;
 
-public interface UserRepository extends ReactiveMongoRepository<UserDocument, String> {
-    Mono<UserDocument> findByUserId(String userId);
-    Mono<UserDocument> findByUsername(String username);
+public interface UserRepository extends ReactiveMongoRepository<UserEntity, String> {
+    Mono<UserEntity> findByUserId(String userId);
+    Mono<UserEntity> findByUsername(String username);
 }

@@ -2,20 +2,21 @@ version: "3.9"
 
 services:
   users-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: ./
     image: users-service:local
     container_name: users-service
     ports:
-      - "8090:8091"
+      - "8090:8090"   # host:container
     environment:
-      # Reactive MongoDB connection
       SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/usersdb
-      # Point this to your real auth server JWKS (Gateway will pass the token along)
+
+      # Choose one of the two lines below (prefer issuer-uri):
+      ISSUER_URI: http://keycloak:8080/realms/chat-local
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/chat-local/protocol/openid-connect/certs
-      # Optional: override service name
+
       SPRING_APPLICATION_NAME: users-service
+      # If you’re running MVC controllers with WebFlux on classpath:
+      SPRING_MAIN_WEB-APPLICATION-TYPE: servlet
     depends_on:
       mongo:
         condition: service_healthy
@@ -40,7 +41,6 @@ services:
       timeout: 5s
       retries: 10
 
-  # Optional: web UI for Mongo (http://localhost:8081)
   mongo-express:
     image: mongo-express:1.0.2-20
     container_name: users-mongo-express
@@ -50,10 +50,30 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: admin
     ports:
-      - "8085:8085"
+      - "8085:8081"     # default mongo-express exposes 8081 internally
     depends_on:
       mongo:
         condition: service_healthy
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2185
+    ports:
+      - "2185:2185"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
 
 volumes:
   mongo_data:

@@ -1,7 +1,9 @@
 server:
-  port: 8080
+  port: 8090
 
 spring:
+  main:
+    web-application-type: servlet
   application:
     name: users-service
   data:
@@ -11,10 +13,18 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: ${KEYCLOAK_JWKS}
+          jwk-set-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI}
+          issuer-uri: ${ISSUER_URI}
 
 management:
   endpoints:
     web:
       exposure:
         include: health,info
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+    org.springframework.cloud.gateway: DEBUG

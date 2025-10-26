@@ -1,4 +1,4 @@
-package com.smartchat.users.domain;
+package com.smartchat.users.persistance.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import java.time.Instant;
 @Setter
 @Getter
 @Document(collection = "users")
-public class UserDocument {
+public class UserEntity {
     @Id
     private String id;
     private String userId;
