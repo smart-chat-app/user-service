@@ -1,0 +1,30 @@
+server:
+  port: 8090
+
+spring:
+  main:
+    web-application-type: servlet
+  application:
+    name: users-service
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI}
+          issuer-uri: ${ISSUER_URI}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+    org.springframework.cloud.gateway: DEBUG
