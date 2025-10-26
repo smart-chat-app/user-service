@@ -1,12 +1,17 @@
-FROM maven:3.9-eclipse-temurin-21 AS build
-WORKDIR /workspace
-COPY . .
-RUN mvn -B -DskipTests clean package
+# ---------- Build (uses Maven inside the container) ----------
+FROM maven:3.9.9-eclipse-temurin-21 AS build
+WORKDIR /src
+COPY pom.xml .
+RUN --mount=type=cache,target=/root/.m2 mvn -q -e -DskipTests dependency:go-offline
+COPY src ./src
+RUN --mount=type=cache,target=/root/.m2 mvn -q -e -DskipTests package
 
-FROM eclipse-temurin:21-jre
-RUN useradd -ms /bin/bash app
-USER app
+# ---------- Runtime ----------
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-COPY --from=build /workspace/target/users-service-*.jar app.jar
-EXPOSE 8090
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+# set this to your actual jar name if different
+ARG JAR_FILE=/src/target/users-service-0.0.1-SNAPSHOT.jar
+COPY --from=build ${JAR_FILE} /app/app.jar
+EXPOSE 8080
+ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0"
+ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app/app.jar"]
