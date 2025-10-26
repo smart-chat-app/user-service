@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  users-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: users-service:local
+    container_name: users-service
+    ports:
+      - "8090:8091"
+    environment:
+      # Reactive MongoDB connection
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/usersdb
+      # Point this to your real auth server JWKS (Gateway will pass the token along)
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/chat-local/protocol/openid-connect/certs
+      # Optional: override service name
+      SPRING_APPLICATION_NAME: users-service
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "-", "http://localhost:8080/users/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 15s
+
+  mongo:
+    image: mongo:7
+    container_name: users-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Optional: web UI for Mongo (http://localhost:8081)
+  mongo-express:
+    image: mongo-express:1.0.2-20
+    container_name: users-mongo-express
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    ports:
+      - "8085:8085"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+volumes:
+  mongo_data:
