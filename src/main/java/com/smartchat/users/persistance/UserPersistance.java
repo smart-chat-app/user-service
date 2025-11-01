@@ -20,8 +20,13 @@ public class UserPersistance {
         return userRepository.findByUsername(username).block();
     }
 
-    public void createUser(User user){
-        UserEntity userEntity = UsersToUserEntityMapper.map(user);
+    public void createUser(UserEntity userEntity){
         userRepository.save(userEntity).block(Duration.ofSeconds(3));
+    }
+
+    public User getMyselfFromUserId(String userId){
+        return userRepository.findByUserId(userId)
+                .map(UsersToUserEntityMapper::mapFromEntity)
+                .blockOptional().orElseThrow(() -> new RuntimeException("No user found"));
     }
 }

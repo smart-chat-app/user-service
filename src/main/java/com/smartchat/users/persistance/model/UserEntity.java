@@ -22,7 +22,7 @@ public class UserEntity {
     private String displayName;
     private String bio;
     private String avatarUrl;
-    private Instant createdAt = Instant.now();
-    private Instant updatedAt = Instant.now();
+/*    private Instant createdAt = Instant.now();
+    private Instant updatedAt = Instant.now();*/
 
 }
