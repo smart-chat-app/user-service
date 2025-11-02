@@ -33,4 +33,11 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
         UserPublic user = service.searchUser(id);
         return ResponseEntity.ok(user);
     }
+
+    @Override
+    public ResponseEntity<User> updateUser(String userId,
+                                           User user){
+        User users = service.updateUser(userId, user);
+        return ResponseEntity.ok(users);
+    }
 }

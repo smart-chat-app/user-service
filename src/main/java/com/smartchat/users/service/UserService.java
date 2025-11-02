@@ -8,7 +8,6 @@ import com.smartchat.users.model.UserPublic;
 import com.smartchat.users.persistance.ContactPersistance;
 import com.smartchat.users.persistance.UserPersistance;
 import com.smartchat.users.persistance.model.Users;
-import com.smartchat.users.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,10 +19,10 @@ import java.util.Objects;
 @Slf4j
 public class UserService {
 
-    private UserPersistance userPersistance;
-    private ContactPersistance contactPersistance;
+    private final UserPersistance userPersistance;
+    private final ContactPersistance contactPersistance;
 
-    private CreateUserProducer producer;
+    private final CreateUserProducer producer;
 
     @Autowired
     public UserService(UserPersistance userPersistance, CreateUserProducer producer, ContactPersistance contactPersistance) {
@@ -62,12 +61,20 @@ public class UserService {
         return user;
     }
 
+    public User updateUser(String userId, User user){
+        User userToUpdate = userPersistance.getMyselfFromUserId(userId);
+        if(Objects.isNull(userToUpdate)){
+            throw new RuntimeException("Impossible to update the user because non existant");
+        }
+        userPersistance.createOrUpdateUser(UserMapper.mapResponse(user));
+        return user;
+    }
+
     private List<Contacts> getListContacts(String userId){
         return contactPersistance.getContactsByAssociateUsId(userId)
                 .stream()
                 .map(UserMapper::mapContact)
                 .toList();
     }
-
 
 }

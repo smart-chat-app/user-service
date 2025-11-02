@@ -13,9 +13,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class UserMapper {
-/*    public static Users mapDocument(User user){
+    public static Users mapResponse(User user){
         return Users.builder()
-                .userId(UUID.randomUUID().toString())
                 .bio(user.getBio().get())
                 .avatarUrl(user.getAvatarUrl().get().toString())
                 .username(user.getUsername())
@@ -24,7 +23,7 @@ public class UserMapper {
                 //.updatedAt(Instant.now())
                 .build();
 
-    }*/
+    }
 
     public static Users mapFromKafka(UserMessageOutboundPayload message){
         return Users.builder()

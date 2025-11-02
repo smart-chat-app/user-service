@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CreateUserListener {
 
-    private UserPersistance persistance;
-    private ObjectMapper mapper;
+    private final UserPersistance persistance;
+    private final ObjectMapper mapper;
     private static final String TOPIC = "user.created";
 
     @Autowired
@@ -30,7 +30,7 @@ public class CreateUserListener {
         UserMessageOutbound user = mapMessage(message);
         log.info("Creating user with userId {}", user.getPayload().getUserId());
         Users users = UserMapper.mapFromKafka(user.getPayload());
-        persistance.createUser(users);
+        persistance.createOrUpdateUser(users);
     }
 
     private UserMessageOutbound mapMessage(String message){

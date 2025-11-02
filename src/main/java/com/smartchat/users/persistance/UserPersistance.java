@@ -13,14 +13,18 @@ import java.time.Duration;
 @Component
 public class UserPersistance {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserPersistance(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public Users getUser(String username){
         return userRepository.findByUsernameOrDisplayName(username).block();
     }
 
-    public void createUser(Users users){
+    public void createOrUpdateUser(Users users){
         userRepository.save(users).block(Duration.ofSeconds(3));
     }
 
