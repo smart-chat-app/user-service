@@ -1,0 +1,76 @@
+openapi: 3.0.3
+info:
+  title: User Kafka Message Schema
+  version: 0.1.0
+  description: >
+    Schemas for a Kafka message `UserMessage` composed of a `UserMessageHeader`
+    and a `UserMessagePayload`. Payload mirrors the Users service `User` model.
+
+paths: {}  # No HTTP endpoints; schemas only
+
+components:
+  schemas:
+    UserMessage:
+      type: object
+      description: Envelope for user-related Kafka events.
+      additionalProperties: false
+      required: [header, payload]
+      properties:
+        header:
+          $ref: '#/components/schemas/UserMessageHeader'
+        payload:
+          $ref: '#/components/schemas/UserMessagePayload'
+      example:
+        header:
+          userId: "abc-123"
+        payload:
+          userId: "abc-123"
+          username: "user_abc123"
+          displayName: "Alex"
+          bio: "Grappler | Java dev"
+          avatarUrl: "https://example.com/avatar.png"
+          createdAt: "2025-10-26T18:30:00Z"
+          updatedAt: "2025-10-26T18:45:00Z"
+
+    UserMessageHeader:
+      type: object
+      description: Lightweight header for routing/correlation.
+      additionalProperties: false
+      required: [userId]
+      properties:
+        userId:
+          type: string
+          description: Stable identifier (typically JWT `sub`).
+
+    UserMessagePayload:
+      type: object
+      description: Same fields as the Users service `User` model.
+      additionalProperties: false
+      required: [userId, username, displayName]
+      properties:
+        userId:
+          type: string
+          description: Stable identifier (typically from JWT `sub`).
+          example: abc-123
+        username:
+          type: string
+          example: user_abc123
+        displayName:
+          type: string
+          example: Alex
+        bio:
+          type: string
+          nullable: true
+          maxLength: 200
+        avatarUrl:
+          type: string
+          format: uri
+          nullable: true
+#        createdAt:
+#          type: string
+#          format: date-time
+#          description: ISO-8601 timestamp.
+#        updatedAt:
+#          type: string
+#          format: date-time
+#          description: ISO-8601 timestamp.

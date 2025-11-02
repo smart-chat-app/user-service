@@ -20,4 +20,6 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
         service.createNewUser(user);
         return ResponseEntity.ok(null);
     }
+
+
 }

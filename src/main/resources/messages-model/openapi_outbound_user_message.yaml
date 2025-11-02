@@ -1,0 +1,80 @@
+openapi: 3.0.3
+info:
+  title: User Created Kafka Message
+  version: 1.0.0
+  description: |
+    JSON mapping for the Kafka event published on topic `user.created`.
+    This OpenAPI file defines the message envelope and payload schemas.
+
+# No HTTP endpoints; this is only for schema documentation
+paths: {}
+
+components:
+  schemas:
+    UserMessageOutbound:
+      type: object
+      required: [header, payload]
+      properties:
+        header:
+          $ref: '#/components/schemas/UserMessageOutboundHeader'
+        payload:
+          $ref: '#/components/schemas/UserMessageOutboundPayload'
+      description: Envelope for user-created event.
+      example:
+        header:
+          userId: abc-124
+        payload:
+          userId: abc-124
+          username: user_abc124
+          displayName: Alex
+          bio: test
+          avatarUrl: https://example.com/avatar.png
+#          createdAt: 2025-11-01T15:02:00Z
+#          updatedAt: 2025-11-01T15:02:00Z
+      # Optional vendor extension to record Kafka topic
+      x-kafka-topic: user.created
+
+    UserMessageOutboundHeader:
+      type: object
+      required: [userId]
+      properties:
+        userId:
+          type: string
+          description: Unique user identifier (typically the JWT `sub`).
+          example: abc-124
+
+    UserMessageOutboundPayload:
+      type: object
+      required: [userId, username]
+      properties:
+        userId:
+          type: string
+          description: Stable identifier for the user.
+          example: abc-124
+        username:
+          type: string
+          description: Unique username/handle.
+          example: user_abc124
+        displayName:
+          type: string
+          nullable: true
+          example: Alex
+        bio:
+          type: string
+          nullable: true
+          example: test
+        avatarUrl:
+          type: string
+          format: uri
+          nullable: true
+          example: https://example.com/avatar.png
+#        createdAt:
+#          type: string
+#          format: date-time
+#          description: When the user was created.
+#          example: 2025-11-01T15:02:00Z
+#        updatedAt:
+#          type: string
+#          format: date-time
+#          description: When the user was last updated.
+#          example: 2025-11-01T15:02:00Z

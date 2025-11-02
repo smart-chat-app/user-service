@@ -6,15 +6,33 @@ spring:
     web-application-type: servlet
   application:
     name: users-service
+
   data:
     mongodb:
       uri: ${SPRING_DATA_MONGODB_URI}
+
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI}
           issuer-uri: ${ISSUER_URI}
+
+
+
+  # ----- Spring Kafka base (used by AdminClient, health, etc.) -----
+  kafka:
+      bootstrap-servers: ${KAFKA_BROKERS:kafka:9092}
+      producer:
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+        properties:
+          acks: all
+          enable.idempotence: true
+          max.in.flight.requests.per.connection: 5
+          retries: 10
+      user-topic: user.created
+
 
 management:
   endpoints:
@@ -24,7 +42,6 @@ management:
 
 logging:
   level:
-    org:
-      springframework:
-        security: DEBUG
-    org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud.stream: INFO
+    org.springframework.kafka: INFO
+    org.springframework.security: WARN

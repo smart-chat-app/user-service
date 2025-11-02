@@ -172,6 +172,16 @@
             <artifactId>mapstruct</artifactId>
             <version>1.6.3</version>
         </dependency>-->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/tools.jackson.datatype/jackson-datatype-jsr310 -->
+        <dependency>
+            <groupId>tools.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>3.0.0-rc2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -263,6 +273,78 @@
                                 <additionalModelTypeAnnotations>
                                     @lombok.AllArgsConstructor
                                 </additionalModelTypeAnnotations>-->
+                                <!-- NOTE: no <reactive>true</reactive> since you want non-reactive APIs -->
+                            </configOptions>
+                            <!-- Optional: generate into target to avoid polluting sources -->
+                            <!--
+                            <outputDir>${project.build.directory}/generated-sources/openapi</outputDir>
+                            <addCompileSourceRoot>true</addCompileSourceRoot>
+                            -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <id>user-message</id>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/messages-model/openapi_user_message_inbound.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <apiPackage>com.smartchat.users.message</apiPackage>
+                            <modelPackage>com.smartchat.users.message.model</modelPackage>
+                            <!-- Generate MVC interfaces + ApiUtil -->
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                            <configOptions>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <useJakartaEe>true</useJakartaEe>
+                                <delegatePattern>true</delegatePattern>
+                                <useBeanValidation>true</useBeanValidation>
+                                <useTags>true</useTags>
+                                <generateBuilders>true</generateBuilders>
+
+                                <!-- Turn on Lombok -->
+                                <useLombok>true</useLombok>
+
+                                <!--       &lt;!&ndash; Add constructor annotations to all models &ndash;&gt;
+                                       <additionalModelTypeAnnotations>
+                                           @lombok.AllArgsConstructor
+                                       </additionalModelTypeAnnotations>-->
+                                <!-- NOTE: no <reactive>true</reactive> since you want non-reactive APIs -->
+                            </configOptions>
+                            <!-- Optional: generate into target to avoid polluting sources -->
+                            <!--
+                            <outputDir>${project.build.directory}/generated-sources/openapi</outputDir>
+                            <addCompileSourceRoot>true</addCompileSourceRoot>
+                            -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <id>user-message-outbound</id>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/messages-model/openapi_outbound_user_message.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <apiPackage>com.smartchat.users.message</apiPackage>
+                            <modelPackage>com.smartchat.users.message.model</modelPackage>
+                            <!-- Generate MVC interfaces + ApiUtil -->
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                            <configOptions>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <useJakartaEe>true</useJakartaEe>
+                                <delegatePattern>true</delegatePattern>
+                                <useBeanValidation>true</useBeanValidation>
+                                <useTags>true</useTags>
+                                <generateBuilders>true</generateBuilders>
+
+                                <!-- Turn on Lombok -->
+                                <useLombok>true</useLombok>
+
+                                <!--       &lt;!&ndash; Add constructor annotations to all models &ndash;&gt;
+                                       <additionalModelTypeAnnotations>
+                                           @lombok.AllArgsConstructor
+                                       </additionalModelTypeAnnotations>-->
                                 <!-- NOTE: no <reactive>true</reactive> since you want non-reactive APIs -->
                             </configOptions>
                             <!-- Optional: generate into target to avoid polluting sources -->
