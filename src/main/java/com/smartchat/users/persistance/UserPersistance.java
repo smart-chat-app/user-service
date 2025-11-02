@@ -1,12 +1,12 @@
 package com.smartchat.users.persistance;
 
-import com.smartchat.users.mapper.UsersToUserEntityMapper;
+import com.smartchat.users.mapper.UserMapper;
 import com.smartchat.users.model.User;
-import com.smartchat.users.persistance.model.UserEntity;
+import com.smartchat.users.persistance.model.Users;
 import com.smartchat.users.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
@@ -16,17 +16,21 @@ public class UserPersistance {
     @Autowired
     private UserRepository userRepository;
 
-    public UserEntity getUser(String username){
-        return userRepository.findByUsername(username).block();
+    public Users getUser(String username){
+        return userRepository.findByUsernameOrDisplayName(username).block();
     }
 
-    public void createUser(UserEntity userEntity){
-        userRepository.save(userEntity).block(Duration.ofSeconds(3));
+    public void createUser(Users users){
+        userRepository.save(users).block(Duration.ofSeconds(3));
     }
 
     public User getMyselfFromUserId(String userId){
         return userRepository.findByUserId(userId)
-                .map(UsersToUserEntityMapper::mapFromEntity)
+                .map(UserMapper::mapDocument)
                 .blockOptional().orElseThrow(() -> new RuntimeException("No user found"));
+    }
+
+    public Mono<Users> searchUserByUsername(String username){
+        return userRepository.findByUsernameOrDisplayName(username);
     }
 }

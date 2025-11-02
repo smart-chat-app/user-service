@@ -1,14 +1,11 @@
 package com.smartchat.users.events;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.smartchat.users.mapper.UsersToUserEntityMapper;
-import com.smartchat.users.message.model.UserMessage;
+import com.smartchat.users.mapper.UserMapper;
 import com.smartchat.users.message.model.UserMessageOutbound;
 import com.smartchat.users.persistance.UserPersistance;
-import com.smartchat.users.persistance.model.UserEntity;
-import lombok.RequiredArgsConstructor;
+import com.smartchat.users.persistance.model.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -32,8 +29,8 @@ public class CreateUserListener {
     public void createNewUser(String message){
         UserMessageOutbound user = mapMessage(message);
         log.info("Creating user with userId {}", user.getPayload().getUserId());
-        UserEntity userEntity = UsersToUserEntityMapper.mapFromKafka(user.getPayload());
-        persistance.createUser(userEntity);
+        Users users = UserMapper.mapFromKafka(user.getPayload());
+        persistance.createUser(users);
     }
 
     private UserMessageOutbound mapMessage(String message){
