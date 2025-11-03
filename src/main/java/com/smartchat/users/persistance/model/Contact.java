@@ -7,22 +7,15 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.Instant;
-
 @Setter
 @Getter
 @Builder
 @AllArgsConstructor
-@Document(collection = "users")
-public class UserEntity {
+@Document(collection = "contacts")
+public class Contact {
     @Id
-    private String id;
     private String userId;
     private String username;
-    private String displayName;
     private String bio;
-    private String avatarUrl;
-/*    private Instant createdAt = Instant.now();
-    private Instant updatedAt = Instant.now();*/
-
+    private String associatUsId;
 }

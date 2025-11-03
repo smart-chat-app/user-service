@@ -28,13 +28,19 @@ paths:
               schema:
                 type: string
                 example: OK
-  /users/me:
+
+  /users/me/{userId}:
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        description: User identifier; either a userId (UUID/string from JWT sub) or a username
+        schema:
+          type: string
     get:
       tags: [Users]
       summary: Get current user's private profile
       operationId: getMe
-      security:
-        - bearerAuth: []
       responses:
         '200':
           description: The current user's profile
@@ -44,34 +50,7 @@ paths:
                 $ref: '#/components/schemas/User'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-    patch:
-      tags: [Users]
-      summary: Update current user's profile
-      operationId: updateMe
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateProfileRequest'
-            examples:
-              patchNameBio:
-                value:
-                  displayName: "Alex"
-                  bio: "Grappler | Java dev"
-      responses:
-        '200':
-          description: Updated user profile
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+
   /users/{id}:
     parameters:
       - name: id
@@ -84,8 +63,6 @@ paths:
       tags: [Users]
       summary: Get a public profile by userId or username
       operationId: getPublicUser
-      security:
-        - bearerAuth: []
       responses:
         '200':
           description: Public profile
@@ -97,46 +74,12 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           $ref: '#/components/responses/NotFound'
-  /users/search:
-    get:
-      tags: [Users]
-      summary: Search users by display name or username prefix
-      operationId: searchUsers
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: query
-          name: q
-          required: true
-          schema:
-            type: string
-          description: Prefix to search on displayName/username
-        - in: query
-          name: limit
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 20
-      responses:
-        '200':
-          description: Matching users
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserPublic'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+
   /users/me/avatar:
     post:
       tags: [Media]
       summary: Request a pre-signed URL to upload an avatar
       operationId: requestAvatarUpload
-      security:
-        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -183,12 +126,38 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+
+  /users/update/{userId}:
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: User identifier; either a userId (UUID/string from JWT sub) or a username
+          schema:
+            type: string
+      post:
+        tags: [ Users ]
+        summary: Updates user profile
+        operationId: updateUser
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+        responses:
+          '200':
+            description: Updated user profile
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/PresignResponse'
+          '400':
+            $ref: '#/components/responses/BadRequest'
+          '401':
+            $ref: '#/components/responses/UnauthorizedError'
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
   responses:
     UnauthorizedError:
       description: Missing or invalid JWT
@@ -243,6 +212,24 @@ components:
         updatedAt:
           type: string
           format: date-time
+        contacts:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/Contacts'
+
+    Contacts:
+      type: object
+      required: [ userId, username, displayName ]
+      properties:
+        userId:
+          type: string
+        username:
+          type: string
+        bio:
+          type: string
+        displayName:
+          type: string
 
     UserPublic:
       allOf:
