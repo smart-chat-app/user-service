@@ -157,6 +157,37 @@ paths:
             $ref: '#/components/responses/BadRequest'
           '401':
             $ref: '#/components/responses/UnauthorizedError'
+
+  /users/send/notification/{senderuuId}:
+    parameters:
+      - name: senderuuId
+        in: path
+        required: true
+        description: User identifier; either a userId (UUID/string from JWT sub) or a username
+        schema:
+          type: string
+    post:
+      tags: [ Notification ]
+      summary: Send contact notification
+      operationId: sendContactNotification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+
+      responses:
+        '200':
+          description: Updated user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresignResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 components:
   responses:
     UnauthorizedError:
@@ -229,6 +260,17 @@ components:
         bio:
           type: string
         displayName:
+          type: string
+
+    Notification:
+      type: object
+      required: [ senderUsername, userId, receiverUsername ]
+      properties:
+        userId:
+          type: string
+        senderUsername:
+          type: string
+        receiverUsername:
           type: string
 
     UserPublic:

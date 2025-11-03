@@ -1,6 +1,6 @@
-package com.smartchat.users.service;
+package com.smartchat.users.service.users;
 
-import com.smartchat.users.events.CreateUserProducer;
+import com.smartchat.users.events.users.CreateUserProducer;
 import com.smartchat.users.mapper.UserMapper;
 import com.smartchat.users.model.Contacts;
 import com.smartchat.users.model.User;

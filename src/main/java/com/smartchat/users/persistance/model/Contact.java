@@ -15,7 +15,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Contact {
     @Id
     private String userId;
+    private String notificationId;
     private String username;
     private String bio;
     private String associatUsId;
+
 }

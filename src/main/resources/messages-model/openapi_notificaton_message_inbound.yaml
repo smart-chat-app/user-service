@@ -1,0 +1,73 @@
+openapi: 3.0.3
+info:
+  title: Notification Kafka Message Schema
+  version: 1.0.0
+  description: |
+    Kafka message model for notifications related to friendship requests or responses.
+    Emitted by the notification-service when a user sends or responds to a friend request.
+
+# No HTTP endpoints; this is only for schema documentation
+paths: {}
+
+components:
+  schemas:
+
+    NotificationInboundMessage:
+      type: object
+      description: Root object for a notification Kafka message.
+      properties:
+        header:
+          $ref: '#/components/schemas/NotificationInboundHeader'
+        payload:
+          $ref: '#/components/schemas/NotificationInboundPayload'
+      required:
+        - header
+        - payload
+
+    NotificationInboundHeader:
+      type: object
+      description: Common Kafka message metadata.
+      properties:
+        eventId:
+          type: string
+          format: uuid
+          example: "1b2f4c6e-89ab-4c12-9def-1234567890ab"
+        producer:
+          type: string
+          example: "notification-service"
+#        occurredAt:
+#          type: string
+#          format: date-time
+#          example: "2025-11-03T10:15:30Z"
+      required:
+        - eventId
+        - producer
+#        - occurredAt
+
+    NotificationInboundPayload:
+      type: object
+      description: Actual notification content for friendship events.
+      properties:
+        senderUserId:
+          type: string
+        receiverUserId:
+          type: string
+        receiverUsername:
+          type: string
+          example: "marco_boxer"
+        accepted:
+          type: boolean
+          description: |
+            Indicates whether the friendship request was accepted (`true`) or rejected (`false`).
+          example: true
+      required:
+        - senderUserId
+        - receiverUserId
+        - receiverUsername
+        - accepted
+
+x-kafka:
+  topics:
+    - name: friend.notification
+      description: Kafka topic for friendship notification events.
+      valueSchema: '#/components/schemas/NotificationMessage'

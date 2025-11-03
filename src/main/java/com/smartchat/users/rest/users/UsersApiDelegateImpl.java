@@ -1,10 +1,10 @@
-package com.smartchat.users.controller;
+package com.smartchat.users.rest.users;
 
 import com.smartchat.users.api.UsersApiDelegate;
 import com.smartchat.users.model.PresignResponse;
 import com.smartchat.users.model.User;
 import com.smartchat.users.model.UserPublic;
-import com.smartchat.users.service.UserService;
+import com.smartchat.users.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

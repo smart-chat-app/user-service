@@ -1,4 +1,4 @@
-package com.smartchat.users.repository;
+package com.smartchat.users.persistance.repository;
 
 import com.smartchat.users.persistance.model.Users;
 import lombok.extern.slf4j.Slf4j;

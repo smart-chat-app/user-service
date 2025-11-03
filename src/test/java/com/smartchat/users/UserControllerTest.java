@@ -1,7 +1,7 @@
 /*
 package com.smartchat.users;
 
-import com.smartchat.users.service.UserService;
+import com.smartchat.users.service.users.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;

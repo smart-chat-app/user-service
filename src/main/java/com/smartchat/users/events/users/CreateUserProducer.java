@@ -1,4 +1,4 @@
-package com.smartchat.users.events;
+package com.smartchat.users.events.users;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,15 +8,10 @@ import com.smartchat.users.message.model.UserMessagePayload;
 import com.smartchat.users.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Slf4j
