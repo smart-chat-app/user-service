@@ -45,7 +45,7 @@ public class CreateUserProducer {
             log.info("Sending message for userId {}", user.getUserId());
             kafkaTemplate.send(TOPIC, user.getUserId(), json);
         } catch (Exception e) {
-            log.error("Problem to send the message {}", e.getMessage());
+            log.error("Problem to send the message - sent to DLQ{}", e.getMessage());
             kafkaTemplate.send(DLQ_TOPIC, user.getUserId(), json);
         }
     }
