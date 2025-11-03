@@ -30,7 +30,7 @@ public class CreateUserListener {
         UserMessageOutbound user = mapMessage(message);
         log.info("Creating user with userId {}", user.getPayload().getUserId());
         Users users = UserMapper.mapFromKafka(user.getPayload());
-        persistance.createOrUpdateUser(users);
+        persistance.createUser(users);
     }
 
     private UserMessageOutbound mapMessage(String message){

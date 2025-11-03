@@ -25,6 +25,7 @@ public class CreateUserProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final static String TOPIC = "user.created";
+    private final static String DLQ_TOPIC = "user.created.dlq";
 
     private final ObjectMapper mapper;
 
@@ -40,21 +41,28 @@ public class CreateUserProducer {
 
         String json = mapMessage(user);
         log.info("json {}", json);
-        Message<String> msg = MessageBuilder
-                .withPayload(json)
-                .setHeader(KafkaHeaders.KEY, user.getUserId())
-                .setHeader(org.springframework.messaging.MessageHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .build();
         try {
             log.info("Sending message for userId {}", user.getUserId());
-            kafkaTemplate.send(TOPIC, json);
+            kafkaTemplate.send(TOPIC, user.getUserId(), json);
         } catch (Exception e) {
             log.error("Problem to send the message {}", e.getMessage());
+            kafkaTemplate.send(DLQ_TOPIC, user.getUserId(), json);
         }
     }
 
     private String mapMessage(User user) {
-        UserMessage message = UserMessage.builder()
+        UserMessage message = map(user);
+        log.info("msg {}", message);
+        try {
+            return mapper.writeValueAsString(message);
+        } catch (JsonProcessingException e) {
+            log.error("Impossible to parse {}", e.getMessage());
+            return null;
+        }
+    }
+
+    private UserMessage map(User user) {
+        return UserMessage.builder()
                 .header(UserMessageHeader.builder()
                         .userId(user.getUserId())
                         .build())
@@ -65,16 +73,9 @@ public class CreateUserProducer {
                         .bio(user.getBio() != null && user.getBio().isPresent() ? user.getBio().get() : null)
                         .avatarUrl(URI.create(user.getAvatarUrl() != null && user.getAvatarUrl().isPresent()
                                 ? user.getAvatarUrl().get().toString() : null))
-                       /* .createdAt(OffsetDateTime.now())
-                        .updatedAt(OffsetDateTime.now())*/
+                        /* .createdAt(OffsetDateTime.now())
+                         .updatedAt(OffsetDateTime.now())*/
                         .build())
                 .build();
-        log.info("msg {}", message);
-        try {
-            return mapper.writeValueAsString(message);
-        } catch (JsonProcessingException e) {
-            log.error("Impossible to parse {}", e.getMessage());
-            return null;
-        }
     }
 }

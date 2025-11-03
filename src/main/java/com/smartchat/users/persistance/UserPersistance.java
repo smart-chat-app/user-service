@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.Objects;
 
 @Component
 public class UserPersistance {
@@ -20,21 +21,25 @@ public class UserPersistance {
         this.userRepository = userRepository;
     }
 
-    public Users getUser(String username){
+    public Users getUser(String username) {
         return userRepository.findByUsernameOrDisplayName(username).block();
     }
 
-    public void createOrUpdateUser(Users users){
-        userRepository.save(users).block(Duration.ofSeconds(3));
+    public void createUser(Users users) {
+        userRepository.saveUser(users).block(Duration.ofSeconds(3));
     }
 
-    public User getMyselfFromUserId(String userId){
+    public User getMyselfFromUserId(String userId) {
         return userRepository.findByUserId(userId)
                 .map(UserMapper::mapDocument)
                 .blockOptional().orElseThrow(() -> new RuntimeException("No user found"));
     }
 
-    public Mono<Users> searchUserByUsername(String username){
+    public Mono<Users> searchUserByUsername(String username) {
         return userRepository.findByUsernameOrDisplayName(username);
+    }
+
+    public void updateUser(String userId, Users users){
+        userRepository.updateUser(userId, users).block();
     }
 }

@@ -61,13 +61,15 @@ public class UserService {
         return user;
     }
 
-    public User updateUser(String userId, User user){
+    public void updateUser(String userId, User user){
         User userToUpdate = userPersistance.getMyselfFromUserId(userId);
         if(Objects.isNull(userToUpdate)){
             throw new RuntimeException("Impossible to update the user because non existant");
         }
-        userPersistance.createOrUpdateUser(UserMapper.mapResponse(user));
-        return user;
+        if(Objects.isNull(userId)){
+            throw new RuntimeException("No userId provided");
+        }
+        userPersistance.updateUser(userId, UserMapper.mapResponse(user));
     }
 
     private List<Contacts> getListContacts(String userId){

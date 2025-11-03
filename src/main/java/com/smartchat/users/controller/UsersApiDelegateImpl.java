@@ -5,21 +5,28 @@ import com.smartchat.users.model.PresignResponse;
 import com.smartchat.users.model.User;
 import com.smartchat.users.model.UserPublic;
 import com.smartchat.users.service.UserService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UsersApiDelegateImpl implements UsersApiDelegate {
 
+
+    private final UserService service;
+
     @Autowired
-    private UserService service;
+    public UsersApiDelegateImpl(UserService service) {
+        this.service = service;
+    }
 
     @Override
     public ResponseEntity<PresignResponse> createNewUser(User user) {
         service.createNewUser(user);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(PresignResponse.builder()
+                        .method(HttpStatus.CREATED.name())
+                .build());
     }
 
     @Override
@@ -29,15 +36,17 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
     }
 
     @Override
-    public ResponseEntity<UserPublic> getPublicUser(String id){
+    public ResponseEntity<UserPublic> getPublicUser(String id) {
         UserPublic user = service.searchUser(id);
         return ResponseEntity.ok(user);
     }
 
     @Override
-    public ResponseEntity<User> updateUser(String userId,
-                                           User user){
-        User users = service.updateUser(userId, user);
-        return ResponseEntity.ok(users);
+    public ResponseEntity<PresignResponse> updateUser(String userId,
+                                           User user) {
+        service.updateUser(userId, user);
+        return ResponseEntity.ok(PresignResponse.builder()
+                .method(HttpStatus.CREATED.name())
+                .build());
     }
 }
