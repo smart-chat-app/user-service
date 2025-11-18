@@ -2,12 +2,11 @@ package com.smartchat.users.service.notification;
 
 import com.smartchat.users.events.notification.SendNotificationProducer;
 import com.smartchat.users.model.Notification;
-import com.smartchat.users.persistance.UserPersistance;
-import com.smartchat.users.persistance.model.Users;
+import com.smartchat.users.persistance.user.UserPersistance;
+import com.smartchat.users.persistance.user.model.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 

@@ -4,11 +4,10 @@ import com.smartchat.users.message.model.UserMessageOutboundPayload;
 import com.smartchat.users.model.Contacts;
 import com.smartchat.users.model.User;
 import com.smartchat.users.model.UserPublic;
-import com.smartchat.users.persistance.model.Contact;
-import com.smartchat.users.persistance.model.Users;
+import com.smartchat.users.persistance.user.model.Contact;
+import com.smartchat.users.persistance.user.model.Users;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 

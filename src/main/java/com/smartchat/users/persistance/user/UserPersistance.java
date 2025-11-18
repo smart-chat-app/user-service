@@ -1,9 +1,9 @@
-package com.smartchat.users.persistance;
+package com.smartchat.users.persistance.user;
 
 import com.smartchat.users.mapper.UserMapper;
 import com.smartchat.users.model.User;
-import com.smartchat.users.persistance.model.Users;
-import com.smartchat.users.persistance.repository.UserRepository;
+import com.smartchat.users.persistance.user.model.Users;
+import com.smartchat.users.persistance.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;

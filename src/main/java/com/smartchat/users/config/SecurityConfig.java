@@ -1,10 +1,12 @@
 package com.smartchat.users.config;
 
+import com.smartchat.users.utils.Utils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -20,7 +22,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/health", "/actuator/**", "/v3/api-docs/**", "/swagger-ui/**", "/users/create")
                         .permitAll()
@@ -49,7 +51,7 @@ public class SecurityConfig {
                 return nimbus.decode(token);
             } catch (JwtException ex) {
                 // Fallback: accept "Bearer <userId>"
-                String userId = deriveUserId(token); // e.g., first 26 chars rule if you need it
+                String userId = Utils.getUserIdFromToken(token); // e.g., first 26 chars rule if you need it
                 Instant now = Instant.now();
 
                 Map<String, Object> headers = Map.of("alg", "none");
@@ -62,11 +64,5 @@ public class SecurityConfig {
                 return new Jwt(token, now, now.plus(Duration.ofHours(12)), headers, claims);
             }
         };
-    }
-
-    // If you need the "first 26 chars" rule, keep it here; otherwise just return token
-    private static String deriveUserId(String token) {
-        // return token; // simple: whole token is the userId
-        return token.length() > 26 ? token.substring(0, 26) : token;
     }
 }

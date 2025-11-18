@@ -1,8 +1,7 @@
 package com.smartchat.users.mapper;
 
-import com.smartchat.users.message.model.NotificationInboundMessage;
 import com.smartchat.users.message.model.NotificationInboundPayload;
-import com.smartchat.users.persistance.model.Contact;
+import com.smartchat.users.persistance.user.model.Contact;
 
 import java.util.UUID;
 

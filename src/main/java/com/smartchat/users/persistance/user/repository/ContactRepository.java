@@ -1,6 +1,6 @@
-package com.smartchat.users.persistance.repository;
+package com.smartchat.users.persistance.user.repository;
 
-import com.smartchat.users.persistance.model.Contact;
+import com.smartchat.users.persistance.user.model.Contact;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;

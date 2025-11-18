@@ -1,4 +1,4 @@
-package com.smartchat.users.persistance.model;
+package com.smartchat.users.persistance.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

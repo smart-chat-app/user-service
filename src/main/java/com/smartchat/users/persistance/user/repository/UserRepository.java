@@ -1,6 +1,6 @@
-package com.smartchat.users.persistance.repository;
+package com.smartchat.users.persistance.user.repository;
 
-import com.smartchat.users.persistance.model.Users;
+import com.smartchat.users.persistance.user.model.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
