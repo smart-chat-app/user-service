@@ -1,6 +1,5 @@
 package com.smartchat.users.config;
 
-import com.smartchat.users.utils.Utils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,11 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -50,18 +44,7 @@ public class SecurityConfig {
             try {
                 return nimbus.decode(token);
             } catch (JwtException ex) {
-                // Fallback: accept "Bearer <userId>"
-                String userId = Utils.getUserIdFromToken(token); // e.g., first 26 chars rule if you need it
-                Instant now = Instant.now();
-
-                Map<String, Object> headers = Map.of("alg", "none");
-                Map<String, Object> claims = new HashMap<>();
-                claims.put("sub", userId);
-                claims.put("token_type", "userId");
-                // (Optional) add any claims your app expects, e.g. username/displayName, scopes, etc.
-
-                // Build a synthetic Jwt valid for 12h (adjust as you wish)
-                return new Jwt(token, now, now.plus(Duration.ofHours(12)), headers, claims);
+                throw new RuntimeException("User not authenticated");
             }
         };
     }

@@ -12,6 +12,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Slf4j
@@ -68,8 +69,8 @@ public class CreateUserProducer {
                         .bio(user.getBio() != null && user.getBio().isPresent() ? user.getBio().get() : null)
                         .avatarUrl(URI.create(user.getAvatarUrl() != null && user.getAvatarUrl().isPresent()
                                 ? user.getAvatarUrl().get().toString() : null))
-                        /* .createdAt(OffsetDateTime.now())
-                         .updatedAt(OffsetDateTime.now())*/
+                         .createdAt(OffsetDateTime.now())
+                         .updatedAt(OffsetDateTime.now())
                         .build())
                 .build();
     }

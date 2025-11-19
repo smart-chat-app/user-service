@@ -42,8 +42,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
     }
 
     @Override
-    public ResponseEntity<PresignResponse> updateUser(String userId,
-                                           User user) {
+    public ResponseEntity<PresignResponse> updateUser(String userId, User user) {
         service.updateUser(userId, user);
         return ResponseEntity.ok(PresignResponse.builder()
                 .method(HttpStatus.CREATED.name())

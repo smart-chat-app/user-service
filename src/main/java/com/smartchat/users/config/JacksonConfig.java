@@ -1,6 +1,7 @@
 package com.smartchat.users.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
@@ -13,15 +14,13 @@ public class JacksonConfig {
     public Jackson2ObjectMapperBuilderCustomizer jsonNullableCustomizer() {
         return builder -> builder.modules(new org.openapitools.jackson.nullable.JsonNullableModule());
     }
-    @Bean
-    public JsonNullableModule jsonNullableModule() {
-        return new JsonNullableModule(); // teaches Jackson how to serialize JsonNullable<T>
-    }
 
     @Bean
-    public JavaTimeModule javaTimeModule() {
-        return new JavaTimeModule(); // teaches Jackson how to serialize JsonNullable<T>
+    public ObjectMapper objectMapper() {
+        return JsonMapper.builder()
+                .addModule(new JavaTimeModule())
+                .addModule(new JsonNullableModule())
+                .build();
     }
-
 }
 

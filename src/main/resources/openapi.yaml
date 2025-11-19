@@ -34,7 +34,10 @@ paths:
       - name: userId
         in: path
         required: true
-        description: User identifier; either a userId (UUID/string from JWT sub) or a username
+        description: >
+          User identifier used by the users-service. When treated as a userId it
+          corresponds to the Keycloak subject (sub) from the JWT; some flows may
+          also accept a username where implemented.
         schema:
           type: string
     get:
@@ -56,7 +59,10 @@ paths:
       - name: id
         in: path
         required: true
-        description: User identifier; either a userId (UUID/string from JWT sub) or a username
+        description: >
+          User identifier used by the users-service. When treated as a userId it
+          corresponds to the Keycloak subject (sub) from the JWT; some flows may
+          also accept a username where implemented.
         schema:
           type: string
     get:
@@ -128,42 +134,48 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
 
   /users/update/{userId}:
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          description: User identifier; either a userId (UUID/string from JWT sub) or a username
-          schema:
-            type: string
-      post:
-        tags: [ Users ]
-        summary: Updates user profile
-        operationId: updateUser
-        requestBody:
-          required: true
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        description: >
+          User identifier used by the users-service. When treated as a userId it
+          corresponds to the Keycloak subject (sub) from the JWT; some flows may
+          also accept a username where implemented.
+        schema:
+          type: string
+    post:
+      tags: [ Users ]
+      summary: Updates user profile
+      operationId: updateUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+
+      responses:
+        '200':
+          description: Updated user profile
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-
-        responses:
-          '200':
-            description: Updated user profile
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/PresignResponse'
-          '400':
-            $ref: '#/components/responses/BadRequest'
-          '401':
-            $ref: '#/components/responses/UnauthorizedError'
+                $ref: '#/components/schemas/PresignResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
   /users/send/notification/{senderuuId}:
     parameters:
       - name: senderuuId
         in: path
         required: true
-        description: User identifier; either a userId (UUID/string from JWT sub) or a username
+        description: >
+          User identifier used by the users-service. When treated as a userId it
+          corresponds to the Keycloak subject (sub) from the JWT; some flows may
+          also accept a username where implemented.
         schema:
           type: string
     post:
@@ -221,7 +233,9 @@ components:
       properties:
         userId:
           type: string
-          description: Stable identifier (typically from JWT `sub`).
+          description: >
+            Stable user identifier used by the users-service. It corresponds to
+            the Keycloak subject (sub) taken from the authenticated JWT.
           example: abc-123
         username:
           type: string
@@ -247,7 +261,7 @@ components:
           type: array
           items:
             allOf:
-            - $ref: '#/components/schemas/Contacts'
+              - $ref: '#/components/schemas/Contacts'
 
     Contacts:
       type: object
@@ -255,6 +269,9 @@ components:
       properties:
         userId:
           type: string
+          description: >
+            User identifier for the contact. This is the same value stored as
+            userId on the User object and corresponds to the Keycloak subject (sub).
         username:
           type: string
         bio:
@@ -268,6 +285,10 @@ components:
       properties:
         userId:
           type: string
+          description: >
+            User identifier associated with this notification. It matches the
+            userId used by the users-service and corresponds to the Keycloak
+            subject (sub) for that user.
         senderUsername:
           type: string
         receiverUsername:

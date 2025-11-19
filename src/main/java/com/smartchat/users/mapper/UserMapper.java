@@ -8,6 +8,8 @@ import com.smartchat.users.persistance.user.model.Contact;
 import com.smartchat.users.persistance.user.model.Users;
 
 import java.net.URI;
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -18,8 +20,7 @@ public class UserMapper {
                 .avatarUrl(user.getAvatarUrl().get().toString())
                 .username(user.getUsername())
                 .displayName(user.getDisplayName())
-                //.createdAt(Instant.now())
-                //.updatedAt(Instant.now())
+                .updatedAt(Instant.now())
                 .build();
 
     }
@@ -31,8 +32,8 @@ public class UserMapper {
                 .avatarUrl(message.getAvatarUrl().get().toString())
                 .username(message.getUsername())
                 .displayName(message.getDisplayName().get())
-                //.createdAt(message.getCreatedAt().toInstant())
-                //.updatedAt(message.getUpdatedAt().toInstant())
+                .createdAt(message.getCreatedAt().toInstant())
+                .updatedAt(message.getUpdatedAt().toInstant())
                 .build();
     }
 
@@ -41,11 +42,11 @@ public class UserMapper {
                 .userId(entity.getUserId())
                 .avatarUrl(URI.create(Objects.nonNull(entity.getAvatarUrl()) ? entity.getAvatarUrl() : ""))
                 .bio(entity.getBio())
-                //.createdAt(OffsetDateTime.from(entity.getCreatedAt()))
+                .createdAt(OffsetDateTime.from(entity.getCreatedAt()))
                 .displayName(entity.getDisplayName())
                 .username(entity.getUsername())
                 .contacts(null)
-                //.updatedAt(OffsetDateTime.from(entity.getUpdatedAt()))
+                .updatedAt(OffsetDateTime.from(entity.getUpdatedAt()))
                 .build();
     }
 

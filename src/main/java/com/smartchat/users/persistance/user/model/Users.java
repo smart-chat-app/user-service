@@ -8,6 +8,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Instant;
+
 @Setter
 @Getter
 @Builder
@@ -22,7 +24,7 @@ public class Users {
     private String displayName;
     private String bio;
     private String avatarUrl;
-/*    private Instant createdAt = Instant.now();
-    private Instant updatedAt = Instant.now();*/
+    private Instant createdAt;
+    private Instant updatedAt;
 
 }

@@ -66,11 +66,11 @@ components:
           type: string
           format: uri
           nullable: true
-#        createdAt:
-#          type: string
-#          format: date-time
-#          description: ISO-8601 timestamp.
-#        updatedAt:
-#          type: string
-#          format: date-time
-#          description: ISO-8601 timestamp.
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO-8601 timestamp.
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO-8601 timestamp.

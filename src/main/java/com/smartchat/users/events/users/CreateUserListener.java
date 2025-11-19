@@ -20,9 +20,9 @@ public class CreateUserListener {
     private static final String TOPIC = "user.created";
 
     @Autowired
-    public CreateUserListener(ObjectMapper mapper, UserPersistance persistance) {
-        this.mapper = mapper;
+    public CreateUserListener(UserPersistance persistance, ObjectMapper mapper) {
         this.persistance = persistance;
+        this.mapper = mapper;
     }
 
     @KafkaListener(topics = TOPIC, groupId = "userCreationId")

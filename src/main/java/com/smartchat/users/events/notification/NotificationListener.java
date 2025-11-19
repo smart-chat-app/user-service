@@ -3,9 +3,11 @@ package com.smartchat.users.events.notification;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartchat.users.mapper.ContactMapper;
+import com.smartchat.users.mapper.NotificationMapper;
 import com.smartchat.users.message.model.NotificationInboundMessage;
 import com.smartchat.users.message.model.NotificationInboundPayload;
 import com.smartchat.users.persistance.notifications.NotificationPersistance;
+import com.smartchat.users.persistance.notifications.model.Notification;
 import com.smartchat.users.persistance.user.ContactPersistance;
 import com.smartchat.users.service.users.UserService;
 import com.smartchat.users.utils.Utils;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import static com.smartchat.users.mapper.NotificationMapper.map;
 import static com.smartchat.users.utils.ContextConstants.NOTIFICATION_TOPIC;
 import static com.smartchat.users.utils.ContextConstants.NOTIFICATION_TOPIC_ACCEPTED;
 
@@ -44,8 +47,8 @@ public class NotificationListener {
         NotificationInboundPayload payload = msg.getPayload();
         String userId = Utils.getUserId();
         if(payload.getReceiverUserId().equals(userId)){
-            //TODO Add mapping for notification
-            notificationPersistance.addNotificaion(null);
+            Notification not = map(payload);
+            notificationPersistance.addNotificaion(not);
         }
     }
 
