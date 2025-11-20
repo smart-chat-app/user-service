@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:8080
     description: Local Users Service
-  - url: http://localhost:8080/api
+  - url: http://localhost:8083/api
     description: Through API Gateway (prefix /api)
 tags:
   - name: Users

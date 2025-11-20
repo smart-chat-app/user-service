@@ -31,7 +31,7 @@ public class UserPersistance {
     public User getMyselfFromUserId(String userId) {
         return userRepository.findByUserId(userId)
                 .map(UserMapper::mapDocument)
-                .blockOptional().orElseThrow(() -> new RuntimeException("No user found"));
+                .blockOptional(Duration.ofSeconds(3)).orElseThrow(() -> new RuntimeException("No user found"));
     }
 
     public Mono<Users> searchUserByUsername(String username) {

@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,6 +34,10 @@ public class UserService {
 
     public void createNewUser(User user){
         String username = user.getUsername();
+        if(username.isEmpty()){
+            log.warn("empty username");
+            throw new RuntimeException("Empty username");
+        }
         Users users = userPersistance.getUser(username);
 
         if(Objects.nonNull(users)){
@@ -43,6 +48,9 @@ public class UserService {
     }
 
     public User getMySelf(String userId){
+        if(userId.isBlank()){
+            throw new RuntimeException("userId must not be null");
+        }
         List<Contacts> contactsList = getListContacts(userId);
         User user = userPersistance.getMyselfFromUserId(userId);
         user.setContacts(contactsList);
@@ -53,7 +61,7 @@ public class UserService {
         UserPublic user =  userPersistance.searchUserByUsername(username)
                 .map(UserMapper::mapDocument)
                 .map(UserMapper::maUserPublic)
-                .block();
+                .block(Duration.ofSeconds(3));
 
         if(Objects.isNull(user)){
             throw new RuntimeException("This user doesn't exists");
