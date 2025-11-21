@@ -1,4 +1,4 @@
-package com.smartchat.users.persistance.model;
+package com.smartchat.users.persistance.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Contact {
     @Id
     private String userId;
+    private String notificationId;
     private String username;
     private String bio;
     private String associatUsId;
+
 }

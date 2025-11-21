@@ -29,8 +29,8 @@ components:
           displayName: Alex
           bio: test
           avatarUrl: https://example.com/avatar.png
-#          createdAt: 2025-11-01T15:02:00Z
-#          updatedAt: 2025-11-01T15:02:00Z
+          createdAt: 2025-11-01T15:02:00Z
+          updatedAt: 2025-11-01T15:02:00Z
       # Optional vendor extension to record Kafka topic
       x-kafka-topic: user.created
 
@@ -68,13 +68,13 @@ components:
           format: uri
           nullable: true
           example: https://example.com/avatar.png
-#        createdAt:
-#          type: string
-#          format: date-time
-#          description: When the user was created.
-#          example: 2025-11-01T15:02:00Z
-#        updatedAt:
-#          type: string
-#          format: date-time
-#          description: When the user was last updated.
-#          example: 2025-11-01T15:02:00Z
+        createdAt:
+          type: string
+          format: date-time
+          description: When the user was created.
+          example: 2025-11-01T15:02:00Z
+        updatedAt:
+          type: string
+          format: date-time
+          description: When the user was last updated.
+          example: 2025-11-01T15:02:00Z

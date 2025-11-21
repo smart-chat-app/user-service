@@ -1,4 +1,4 @@
-package com.smartchat.users.persistance.model;
+package com.smartchat.users.persistance.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
+import java.time.Instant;
 
 @Setter
 @Getter
@@ -24,7 +24,7 @@ public class Users {
     private String displayName;
     private String bio;
     private String avatarUrl;
-/*    private Instant createdAt = Instant.now();
-    private Instant updatedAt = Instant.now();*/
+    private Instant createdAt;
+    private Instant updatedAt;
 
 }
