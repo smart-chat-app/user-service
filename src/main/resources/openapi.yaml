@@ -29,17 +29,7 @@ paths:
                 type: string
                 example: OK
 
-  /users/me/{userId}:
-    parameters:
-      - name: userId
-        in: path
-        required: true
-        description: >
-          User identifier used by the users-service. When treated as a userId it
-          corresponds to the Keycloak subject (sub) from the JWT; some flows may
-          also accept a username where implemented.
-        schema:
-          type: string
+  /users/me:
     get:
       tags: [Users]
       summary: Get current user's private profile
@@ -133,17 +123,7 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 
-  /users/update/{userId}:
-    parameters:
-      - name: userId
-        in: path
-        required: true
-        description: >
-          User identifier used by the users-service. When treated as a userId it
-          corresponds to the Keycloak subject (sub) from the JWT; some flows may
-          also accept a username where implemented.
-        schema:
-          type: string
+  /users/update/:
     post:
       tags: [ Users ]
       summary: Updates user profile

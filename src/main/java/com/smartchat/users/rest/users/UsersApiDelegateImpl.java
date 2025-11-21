@@ -42,9 +42,9 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
     }
 
     @Override
-    public ResponseEntity<User> getMe(String userId) {
+    public ResponseEntity<User> getMe() {
         try {
-            User user = service.getMySelf(userId);
+            User user = service.getMySelf();
             return ResponseEntity.ok(user);
         }catch(Exception e){
             log.error(Arrays.toString(e.getStackTrace()));
@@ -63,9 +63,9 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
     }
 
     @Override
-    public ResponseEntity<PresignResponse> updateUser(String userId, User user) {
+    public ResponseEntity<PresignResponse> updateUser(User user) {
         try {
-            service.updateUser(userId, user);
+            service.updateUser(user);
             return ResponseEntity.ok(PresignResponse.builder()
                     .method(HttpStatus.CREATED.name())
                     .build());

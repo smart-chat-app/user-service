@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Document(collection = "notification")
 public class Notification {
-
     private String notificationId;
     private String sender;
+    private String userId;
 }

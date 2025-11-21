@@ -16,7 +16,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
-import static com.smartchat.users.utils.Utils.checkUserId;
+import static com.smartchat.users.utils.Utils.getUserId;
 
 @Component
 @Slf4j
@@ -49,11 +49,8 @@ public class UserService {
         }
     }
 
-    public User getMySelf(String userId){
-        if(userId.isBlank()){
-            throw new RuntimeException("userId must not be null");
-        }
-        checkUserId(userId);
+    public User getMySelf(){
+        String userId = getUserId();
         List<Contacts> contactsList = getListContacts(userId);
         User user = userPersistance.getMyselfFromUserId(userId);
         user.setContacts(contactsList);
@@ -72,13 +69,11 @@ public class UserService {
         return user;
     }
 
-    public void updateUser(String userId, User user){
+    public void updateUser(User user){
+        String userId = getUserId();
         User userToUpdate = userPersistance.getMyselfFromUserId(userId);
         if(Objects.isNull(userToUpdate)){
             throw new RuntimeException("Impossible to update the user because non existant");
-        }
-        if(Objects.isNull(userId)){
-            throw new RuntimeException("No userId provided");
         }
         userPersistance.updateUser(userId, UserMapper.mapResponse(user));
     }

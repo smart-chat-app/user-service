@@ -24,32 +24,10 @@ public class Utils {
         return userId;
     }
 
-    /**
-     * Ensures the path userId matches the header X-User-Id.
-     * Throws:
-     *  - 401 if header missing
-     *  - 403 if they don't match
-     */
-    public static void checkUserId(String pathUserId) {
-        String headerUserId = getHeaderUserId();
-
-        if (headerUserId == null || headerUserId.isBlank()) {
-            log.error("Missing X-User-Id header");
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing X-User-Id header");
-        }
-
-        if (!headerUserId.equals(pathUserId)) {
-            log.error("UserId mismatch: header={}, path={}", headerUserId, pathUserId);
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Attempt to inject another user has been made"
-            );
-        }
-    }
-
     private static String getHeaderUserId() {
         var attribute = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (Objects.isNull(attribute)) {
+            //TODO throw an exception instead of null
             return null;
         }
         return attribute.getRequest().getHeader(ContextConstants.USER_ID); // e.g. "X-User-Id"

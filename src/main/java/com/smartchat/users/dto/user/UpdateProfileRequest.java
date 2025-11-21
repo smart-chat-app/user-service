@@ -1,4 +1,4 @@
-package com.smartchat.users.dto;
+package com.smartchat.users.dto.user;
 
 import jakarta.validation.constraints.Size;
 
