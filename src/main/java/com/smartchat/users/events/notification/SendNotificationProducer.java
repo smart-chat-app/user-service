@@ -50,7 +50,7 @@ public class SendNotificationProducer {
                 .build();
         NotificationPayload payload = NotificationPayload.builder() //TODO Add senderUserId in the payload
                 .senderUsername(notification.getSenderUsername())
-                .receiverUsername(notification.getSenderUsername())
+                .receiverUsername(notification.getReceiverUsername())
                 .build();
         return NotificationMessage.builder()
                 .header(header)
