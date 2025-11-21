@@ -16,6 +16,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
+import static com.smartchat.users.utils.Utils.checkUserId;
+
 @Component
 @Slf4j
 public class UserService {
@@ -51,6 +53,7 @@ public class UserService {
         if(userId.isBlank()){
             throw new RuntimeException("userId must not be null");
         }
+        checkUserId(userId);
         List<Contacts> contactsList = getListContacts(userId);
         User user = userPersistance.getMyselfFromUserId(userId);
         user.setContacts(contactsList);

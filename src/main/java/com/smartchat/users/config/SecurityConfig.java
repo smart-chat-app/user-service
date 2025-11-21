@@ -21,31 +21,7 @@ public class SecurityConfig {
                         .requestMatchers("/users/health", "/actuator/**", "/v3/api-docs/**", "/swagger-ui/**", "/users/create")
                         .permitAll()
                         .anyRequest().authenticated()
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt()); // uses our JwtDecoder bean
+                );
         return http.build();
-    }
-
-    /**
-     * Decoder that first tries real JWT via JWKS, then falls back to treating the token
-     * string itself as a userId (no signature verification).
-     */
-    @Bean
-    public JwtDecoder jwtDecoder(
-            @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}") String jwks,
-            @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")    String issuer) {
-
-        // Primary: real JWT from Keycloak (or any OIDC provider)
-        NimbusJwtDecoder nimbus = NimbusJwtDecoder.withJwkSetUri(jwks).build();
-        nimbus.setJwtValidator(JwtValidators.createDefaultWithIssuer(issuer));
-
-        // Wrapper that falls back to "userId token"
-        return token -> {
-            try {
-                return nimbus.decode(token);
-            } catch (JwtException ex) {
-                throw new RuntimeException("User not authenticated");
-            }
-        };
     }
 }
