@@ -23,29 +23,53 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
 
     @Override
     public ResponseEntity<PresignResponse> createNewUser(User user) {
-        service.createNewUser(user);
-        return ResponseEntity.ok(PresignResponse.builder()
-                        .method(HttpStatus.CREATED.name())
-                .build());
+        try {
+            service.createNewUser(user);
+            return ResponseEntity.ok(PresignResponse.builder()
+                    .method(HttpStatus.CREATED.name())
+                    .build());
+        } catch(Exception e){
+            return ResponseEntity.badRequest()
+                    .body(PresignResponse.builder()
+                            .message(e.getMessage())
+                            .method(HttpStatus.BAD_REQUEST.name())
+                            .build());
+        }
     }
 
     @Override
     public ResponseEntity<User> getMe(String userId) {
-        User user = service.getMySelf(userId);
-        return ResponseEntity.ok(user);
+        try {
+            User user = service.getMySelf(userId);
+            return ResponseEntity.ok(user);
+        }catch(Exception e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Override
     public ResponseEntity<UserPublic> getPublicUser(String id) {
-        UserPublic user = service.searchUser(id);
-        return ResponseEntity.ok(user);
+        try {
+            UserPublic user = service.searchUser(id);
+            return ResponseEntity.ok(user);
+        }catch(Exception e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Override
     public ResponseEntity<PresignResponse> updateUser(String userId, User user) {
-        service.updateUser(userId, user);
-        return ResponseEntity.ok(PresignResponse.builder()
-                .method(HttpStatus.CREATED.name())
-                .build());
+        try {
+            service.updateUser(userId, user);
+            return ResponseEntity.ok(PresignResponse.builder()
+                    .method(HttpStatus.CREATED.name())
+                    .build());
+        }catch(Exception e){
+            return ResponseEntity.badRequest()
+                    .body(PresignResponse.builder()
+                            .message(e.getMessage())
+                            .method(HttpStatus.BAD_REQUEST.name())
+                            .build());
+        }
     }
 }

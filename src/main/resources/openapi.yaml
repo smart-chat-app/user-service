@@ -330,7 +330,7 @@ components:
           example: avatar.png
     PresignResponse:
       type: object
-      required: [uploadUrl, publicUrl, method, headers]
+      required: [uploadUrl, publicUrl, method, headers, message]
       properties:
         uploadUrl:
           type: string
@@ -348,6 +348,9 @@ components:
           type: string
           format: uri
           description: Public URL the service will store as avatarUrl after upload
+        message:
+          type: string
+          description: Cause of error
     ErrorResponse:
       type: object
       properties:
