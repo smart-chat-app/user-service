@@ -27,7 +27,7 @@ public class UserMapper {
 
     public static Users mapFromKafka(UserMessageOutboundPayload message){
         return Users.builder()
-                .userId(UUID.randomUUID().toString())
+                .userId(message.getUserId())
                 .bio(message.getBio().get())
                 .avatarUrl(message.getAvatarUrl().get().toString())
                 .username(message.getUsername())
@@ -42,11 +42,9 @@ public class UserMapper {
                 .userId(entity.getUserId())
                 .avatarUrl(URI.create(Objects.nonNull(entity.getAvatarUrl()) ? entity.getAvatarUrl() : ""))
                 .bio(entity.getBio())
-                .createdAt(OffsetDateTime.from(entity.getCreatedAt()))
                 .displayName(entity.getDisplayName())
                 .username(entity.getUsername())
                 .contacts(null)
-                .updatedAt(OffsetDateTime.from(entity.getUpdatedAt()))
                 .build();
     }
 

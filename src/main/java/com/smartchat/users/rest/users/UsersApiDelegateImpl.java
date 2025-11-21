@@ -5,11 +5,15 @@ import com.smartchat.users.model.PresignResponse;
 import com.smartchat.users.model.User;
 import com.smartchat.users.model.UserPublic;
 import com.smartchat.users.service.users.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
+@Slf4j
 @Service
 public class UsersApiDelegateImpl implements UsersApiDelegate {
 
@@ -43,6 +47,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
             User user = service.getMySelf(userId);
             return ResponseEntity.ok(user);
         }catch(Exception e){
+            log.error(Arrays.toString(e.getStackTrace()));
             return ResponseEntity.notFound().build();
         }
     }
