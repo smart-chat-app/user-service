@@ -28,10 +28,9 @@ public class UserPersistance {
         userRepository.saveUser(users).block(Duration.ofSeconds(3));
     }
 
-    public User getMyselfFromUserId(String userId) {
+    public Mono<User> getCurrentUserInformatiosnFromUserId(String userId) {
         return userRepository.findByUserId(userId)
-                .map(UserMapper::mapDocument)
-                .blockOptional(Duration.ofSeconds(3)).orElseThrow(() -> new RuntimeException("No user found"));
+                .map(UserMapper::mapDocument);
     }
 
     public Mono<Users> searchUserByUsername(String username) {

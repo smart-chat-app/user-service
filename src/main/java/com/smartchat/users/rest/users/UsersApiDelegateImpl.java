@@ -44,7 +44,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
     @Override
     public ResponseEntity<User> getMe() {
         try {
-            User user = service.getMySelf();
+            User user = service.retrieveCurrentUserInformations();
             return ResponseEntity.ok(user);
         }catch(Exception e){
             log.error(Arrays.toString(e.getStackTrace()));

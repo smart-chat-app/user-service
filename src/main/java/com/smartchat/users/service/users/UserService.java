@@ -1,6 +1,7 @@
 package com.smartchat.users.service.users;
 
 import com.smartchat.users.events.users.CreateUserProducer;
+import com.smartchat.users.exceptions.UserNotFoundException;
 import com.smartchat.users.mapper.UserMapper;
 import com.smartchat.users.model.Contacts;
 import com.smartchat.users.model.User;
@@ -49,12 +50,18 @@ public class UserService {
         }
     }
 
-    public User getMySelf(){
+    public User retrieveCurrentUserInformations() throws UserNotFoundException {
         String userId = getUserId();
         List<Contacts> contactsList = getListContacts(userId);
-        User user = userPersistance.getMyselfFromUserId(userId);
-        user.setContacts(contactsList);
-        return user;
+        try {
+            User user = userPersistance.getCurrentUserInformatiosnFromUserId(userId)
+                    .blockOptional()
+                    .orElseThrow();
+            user.setContacts(contactsList);
+            return user;
+        } catch (RuntimeException e) {
+            throw new UserNotFoundException("User not found");
+        }
     }
 
     public UserPublic searchUser(String username){
@@ -69,13 +76,16 @@ public class UserService {
         return user;
     }
 
-    public void updateUser(User user){
+    public void updateUser(User user) throws UserNotFoundException {
         String userId = getUserId();
-        User userToUpdate = userPersistance.getMyselfFromUserId(userId);
-        if(Objects.isNull(userToUpdate)){
-            throw new RuntimeException("Impossible to update the user because non existant");
+        try {
+            userPersistance.getCurrentUserInformatiosnFromUserId(userId)
+                    .blockOptional()
+                    .orElseThrow();
+            userPersistance.updateUser(userId, UserMapper.mapResponse(user));
+        }catch(RuntimeException e){
+            throw new UserNotFoundException("User not found");
         }
-        userPersistance.updateUser(userId, UserMapper.mapResponse(user));
     }
 
     private List<Contacts> getListContacts(String userId){
