@@ -33,6 +33,14 @@ spring:
           retries: 10
       user-topic: user.created
 
+keycloak:
+  admin:
+    base-url: ${KEYCLOAK_BASE_URL:http://keycloak:8080}
+    realm: ${KEYCLOAK_REALM:chat-local}
+    admin-realm: ${KEYCLOAK_ADMIN_REALM:master}
+    client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:admin-cli}
+    username: ${KEYCLOAK_ADMIN_USERNAME:admin}
+    password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
 
 management:
   endpoints:

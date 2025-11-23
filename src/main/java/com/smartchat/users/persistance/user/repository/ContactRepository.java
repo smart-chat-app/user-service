@@ -1,6 +1,6 @@
-package com.smartchat.users.repository;
+package com.smartchat.users.persistance.user.repository;
 
-import com.smartchat.users.persistance.model.Contact;
+import com.smartchat.users.persistance.user.model.Contact;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
@@ -14,4 +14,8 @@ public interface ContactRepository extends ReactiveMongoRepository<Contact, Stri
             "{ $match: { associatUsId: ?0 } }"
     })
     Flux<Contact> findContactsByAssociatUsId(String userId);
+    @Aggregation(pipeline = {
+            "{ $match: { notificationId: ?0 } }"
+    })
+    Flux<Contact> findByNotificationId(String notificationId);
 }
