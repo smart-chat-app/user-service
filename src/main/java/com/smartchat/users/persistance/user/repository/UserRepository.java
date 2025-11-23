@@ -36,10 +36,10 @@ public class UserRepository {
     }
 
     public Mono<Users> updateUser(String userId, Users user) {
-        log.info("User: {}", user.getUserId());
+        log.info("User: {}", user.getUserIdKey().getUserId());
         Query query = new Query(Criteria.where("userId").is(userId));
         Update update = new Update();
-        update.set("username", user.getUsername());
+        update.set("username", user.getUserIdKey().getUsername());
         update.set("displayName", user.getDisplayName());
         update.set("bio", user.getBio());
         update.set("avatarUrl", user.getAvatarUrl());

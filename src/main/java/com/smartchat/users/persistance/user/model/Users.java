@@ -18,9 +18,7 @@ import java.time.Instant;
 public class Users {
     @Id
     @Indexed(unique = true)
-    private String id;
-    private String userId;
-    private String username;
+    private UserIdKey userIdKey;
     private String displayName;
     private String bio;
     private String avatarUrl;
