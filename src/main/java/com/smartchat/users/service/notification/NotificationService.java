@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,10 +38,10 @@ public class NotificationService {
         if(notification.getReceiverUsername().isBlank()){
             throw new RuntimeException("username cannot be empty");
         }
-        Users user = userPersistance.getUser(notification.getReceiverUsername());
-        if(Objects.isNull(user)){
-            throw new RuntimeException("No user found by this username");
-        }
+        userPersistance.getUser(notification.getReceiverUsername())
+                .blockOptional()
+                .orElseThrow(() -> new RuntimeException("No user found by this username"));
+
         log.info("Sending notification");
         producer.pushNotification(notification);
     }

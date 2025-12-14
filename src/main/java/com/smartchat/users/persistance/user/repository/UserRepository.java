@@ -35,6 +35,14 @@ public class UserRepository {
         return mongoTemplate.findOne(query, Users.class);
     }
 
+    public Mono<Boolean> isUserExisting(String value) {
+        Query query = new Query(new Criteria().orOperator(
+                Criteria.where("username").is(value),
+                Criteria.where("displayName").is(value)
+        ));
+        return mongoTemplate.findOne(query, Boolean.class);
+    }
+
     public Mono<Users> updateUser(String userId, Users user) {
         log.info("User: {}", user.getUserIdKey().getUserId());
         Query query = new Query(Criteria.where("userId").is(userId));

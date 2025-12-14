@@ -226,20 +226,23 @@
                 </executions>
             </plugin>
 
-           <!-- <plugin>
+           <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <annotationProcessorPaths>
+                    <source>21</source>
+                    <target>21</target>
+                    <compilerArgs>--enable-preview</compilerArgs>
+                 <!--   <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
                             <version>1.6.3</version>
                         </path>
-                    </annotationProcessorPaths>
+                    </annotationProcessorPaths>-->
                 </configuration>
-            </plugin>-->
+            </plugin>
 
             <!-- OpenAPI generator (plugin; not a dependency) -->
             <plugin>

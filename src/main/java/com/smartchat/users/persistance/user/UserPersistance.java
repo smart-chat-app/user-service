@@ -20,8 +20,12 @@ public class UserPersistance {
         this.userRepository = userRepository;
     }
 
-    public Users getUser(String username) {
-        return userRepository.findByUsernameOrDisplayName(username).block();
+    public Mono<Boolean> checkUserExistance(String username){
+        return userRepository.isUserExisting(username);
+    }
+
+    public Mono<Users> getUser(String username) {
+        return userRepository.findByUsernameOrDisplayName(username);
     }
 
     public void createUser(Users users) {
