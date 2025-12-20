@@ -9,7 +9,6 @@ import com.smartchat.users.persistance.notifications.NotificationPersistance;
 import com.smartchat.users.persistance.notifications.model.Notification;
 import com.smartchat.users.persistance.user.ContactPersistence;
 import com.smartchat.users.service.users.UserService;
-import com.smartchat.users.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -44,7 +43,7 @@ public class NotificationListener {
     public void saveNotification(String message){
         NotificationInboundMessage msg = mapMessage(message);
         NotificationInboundPayload payload = msg.getPayload();
-        String userId = Utils.getUserId();
+        var userId = msg.getPayload().getSenderUserId();
         if(payload.getReceiverUserId().equals(userId)){
             Notification not = map(payload);
             notificationPersistance.addNotificaion(not);

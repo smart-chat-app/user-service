@@ -21,13 +21,13 @@ public class NotificationPersistance {
     }
 
     public void addNotificaion(Notification notification){
-        repository.save(notification).block();
+        repository.save(notification);
     }
 
     public void removeNotification(String notificationId){
-        repository.deleteById(notificationId).block();
+        repository.deleteById(notificationId);
     }
     public List<Notification> retrieveNotificationByUserId(String userId){
-        return repository.findByUserId(userId).blockFirst(Duration.ofSeconds(3));
+        return repository.findByUserId(userId);
     }
 }

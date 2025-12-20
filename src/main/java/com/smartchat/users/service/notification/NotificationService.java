@@ -33,7 +33,6 @@ public class NotificationService {
     }
 
     public void sendNotification(Notification notification){
-        //TODO Here i don't need whole notification, i need only receiver username
         //Also, verify that the sender username is associated with sender user id
         if(notification.getReceiverUsername().isBlank()){
             throw new RuntimeException("username cannot be empty");
