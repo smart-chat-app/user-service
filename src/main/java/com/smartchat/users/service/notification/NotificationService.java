@@ -39,7 +39,6 @@ public class NotificationService {
             throw new RuntimeException("username cannot be empty");
         }
         userPersistance.getUser(notification.getReceiverUsername())
-                .blockOptional()
                 .orElseThrow(() -> new RuntimeException("No user found by this username"));
 
         log.info("Sending notification");
