@@ -6,9 +6,8 @@ import com.smartchat.users.persistance.user.model.Users;
 import com.smartchat.users.persistance.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
-import java.time.Duration;
+import java.util.Optional;
 
 @Component
 public class UserPersistance {
@@ -20,28 +19,27 @@ public class UserPersistance {
         this.userRepository = userRepository;
     }
 
-    public Mono<Boolean> checkUserExistance(String username){
+    public Boolean checkUserExistence(String username){
         return userRepository.isUserExisting(username);
     }
 
-    public Mono<Users> getUser(String username) {
+    public Optional<Users> getUser(String username) {
         return userRepository.findByUsernameOrDisplayName(username);
     }
 
     public void createUser(Users users) {
-        userRepository.saveUser(users).block(Duration.ofSeconds(3));
+        userRepository.saveUser(users);
     }
 
-    public Mono<User> getCurrentUserInformatiosnFromUserId(String userId) {
-        return userRepository.findByUserId(userId)
-                .map(UserMapper::mapDocument);
+    public Optional<User> getCurrentUserInformationFromUserId(String userId) {
+        return userRepository.findByUserId(userId).flatMap(entity -> Optional.ofNullable(UserMapper.mapDocument(entity)));
     }
 
-    public Mono<Users> searchUserByUsername(String username) {
+    public Optional<Users> searchUserByUsername(String username) {
         return userRepository.findByUsernameOrDisplayName(username);
     }
 
     public void updateUser(String userId, Users users){
-        userRepository.updateUser(userId, users).block();
+        userRepository.updateUser(userId, users);
     }
 }

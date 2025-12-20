@@ -10,9 +10,7 @@ import com.smartchat.users.persistance.user.model.Users;
 
 import java.net.URI;
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 public class UserMapper {
     public static Users mapResponse(User user){

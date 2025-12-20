@@ -15,11 +15,10 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Component
-public class CreateUserProducer {
+public class UserProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final static String TOPIC = "user.created";
@@ -29,7 +28,7 @@ public class CreateUserProducer {
     private final MeterMetrics metrics;
 
     @Autowired
-    public CreateUserProducer(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper mapper, MeterMetrics metrics) {
+    public UserProducer(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper mapper, MeterMetrics metrics) {
         this.kafkaTemplate = kafkaTemplate;
         this.mapper = mapper;
         this.metrics = metrics;
@@ -37,7 +36,6 @@ public class CreateUserProducer {
 
     public void pushCreateNewUserEvent(User user) {
         Objects.requireNonNull(user, "user must not be null");
-
         String json = mapMessage(user);
         log.info("json {}", json);
         try {
@@ -72,10 +70,9 @@ public class CreateUserProducer {
                         .username(user.getUsername())
                         .displayName(user.getDisplayName())
                         .bio(user.getBio() != null && user.getBio().isPresent() ? user.getBio().get() : null)
-                        .avatarUrl(URI.create(user.getAvatarUrl() != null && user.getAvatarUrl().isPresent()
-                                ? user.getAvatarUrl().get().toString() : null))
-                         .createdAt(OffsetDateTime.now())
-                         .updatedAt(OffsetDateTime.now())
+                        .avatarUrl(user.getAvatarUrl() != null ? URI.create(user.getAvatarUrl().get().toString()) : null)
+                        .createdAt(OffsetDateTime.now())
+                        .updatedAt(OffsetDateTime.now())
                         .build())
                 .build();
     }

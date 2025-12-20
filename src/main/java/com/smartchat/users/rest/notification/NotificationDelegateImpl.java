@@ -21,11 +21,11 @@ public class NotificationDelegateImpl implements NotificationApiDelegate {
 
     @Override
     public ResponseEntity<PresignResponse> sendContactNotification(String senderuuId,
-                                                                   Notification notification){
+                                                                   Notification notification) {
         notification.setUserId(senderuuId);
         notificationService.sendNotification(notification);
         return ResponseEntity.ok(PresignResponse.builder()
-                        .method(HttpStatus.OK.name())
+                .method(HttpStatus.OK.name())
                 .build());
     }
 }
