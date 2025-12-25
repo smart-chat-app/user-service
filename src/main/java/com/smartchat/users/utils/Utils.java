@@ -6,7 +6,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
