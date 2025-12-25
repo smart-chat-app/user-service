@@ -18,8 +18,11 @@ public class Utils {
      * Throws 401 if missing.
      */
     public static String getUserId() {
-        return getHeaderUserId()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing X-User-Id header"));
+        try {
+            return getHeaderUserId().toString();
+        }catch(Exception e){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing X-User-Id header");
+        }
     }
 
     private static Optional<String> getHeaderUserId() {

@@ -42,7 +42,7 @@ public class NotificationService {
     }
 
     public List<Notification> retrieveUserNotification(String userId) throws UserNotFoundException {
-        if(null == userId || userId.isEmpty()) throw new UserNotFoundException();
+        if(null == userId || userId.isBlank()) throw new UserNotFoundException();
         return notificationPersistance.retrieveNotificationByUserId(userId)
                 .stream()
                 .map(NotificationMapper::mapDTO)

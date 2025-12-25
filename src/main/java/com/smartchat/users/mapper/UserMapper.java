@@ -30,7 +30,7 @@ public class UserMapper {
                 .userIdKey(buildUserIdKey(message.getUserId(), message.getUsername()))
                 .bio(checkBioKafka(message))
                 .avatarUrl(checkAvatarUrlKafka(message))
-                .displayName(message.getDisplayName().get())
+                .displayName(checkDisplayName(message))
                 .createdAt(message.getCreatedAt().toInstant())
                 .updatedAt(message.getUpdatedAt().toInstant())
                 .build();
@@ -86,5 +86,9 @@ public class UserMapper {
 
     private static String checkAvatarUrlKafka(UserMessageOutboundPayload user){
         return Optional.ofNullable(user.getAvatarUrl().isPresent() ? user.getAvatarUrl().get() : Optional.empty()).toString();
+    }
+
+    private static String checkDisplayName(UserMessageOutboundPayload user){
+        return Optional.ofNullable(user.getDisplayName().isPresent() ? user.getDisplayName().get() : Optional.empty()).toString();
     }
 }
