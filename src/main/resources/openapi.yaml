@@ -159,7 +159,7 @@ paths:
         schema:
           type: string
     post:
-      tags: [ Notification ]
+      tags: [ Users ]
       summary: Send contact notification
       operationId: sendContactNotification
       requestBody:
@@ -180,6 +180,32 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+  /users/show/notifications/:
+    parameters:
+      - name: senderuuId
+        in: path
+        required: true
+        description: >
+          User identifier used by the users-service. When treated as a userId it
+          corresponds to the Keycloak subject (sub) from the JWT; some flows may
+          also accept a username where implemented.
+        schema:
+          type: string
+    get:
+      tags: [ Users ]
+      summary: Shows all the users notification
+      operationId: showAllNotifications
+      responses:
+        '200':
+          description: Shows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+        '500':
+          $ref: '#/components/responses/BadRequest'
 components:
   responses:
     UnauthorizedError:

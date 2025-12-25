@@ -1,12 +1,11 @@
 package com.smartchat.users.persistance.notifications;
 
-import com.smartchat.users.persistance.notifications.model.Notification;
+import com.smartchat.users.persistance.notifications.model.NotificationEntity;
 import com.smartchat.users.persistance.notifications.repository.NotificationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.util.List;
 
 @Slf4j
@@ -20,14 +19,14 @@ public class NotificationPersistance {
         this.repository = repository;
     }
 
-    public void addNotificaion(Notification notification){
-        repository.save(notification);
+    public void addNotificaion(NotificationEntity notificationEntity){
+        repository.save(notificationEntity);
     }
 
     public void removeNotification(String notificationId){
         repository.deleteById(notificationId);
     }
-    public List<Notification> retrieveNotificationByUserId(String userId){
+    public List<NotificationEntity> retrieveNotificationByUserId(String userId){
         return repository.findByUserId(userId);
     }
 }

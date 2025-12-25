@@ -6,16 +6,13 @@ import com.smartchat.users.mapper.NotificationMapper;
 import com.smartchat.users.model.Notification;
 import com.smartchat.users.persistance.notifications.NotificationPersistance;
 import com.smartchat.users.persistance.user.UserPersistance;
-import com.smartchat.users.persistance.user.model.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
-import static com.smartchat.users.mapper.NotificationMapper.mapDTO;
 
 @Slf4j
 @Component
@@ -44,7 +41,7 @@ public class NotificationService {
         producer.pushNotification(notification);
     }
 
-    public List<NotificationDTO> retrieveUserNotification(String userId){
+    public List<Notification> retrieveUserNotification(String userId){
         if(Objects.isNull(userId) || userId.isBlank()){
             throw new RuntimeException("UserId is mandatory");
         }
