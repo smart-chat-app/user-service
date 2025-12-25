@@ -4,8 +4,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.mongodb.ReactiveMongoDatabaseFactory;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
@@ -27,12 +28,12 @@ public class MongoConfig {
         List<Object> converters = new ArrayList<>();
 
         // Write: OffsetDateTime -> Date
-        converters.add(new org.springframework.core.convert.converter.Converter<OffsetDateTime, Date>() {
+        converters.add(new Converter<OffsetDateTime, Date>() {
             @Override public Date convert(OffsetDateTime source) { return Date.from(source.toInstant()); }
         });
 
         // Read: Date -> OffsetDateTime (UTC)
-        converters.add(new org.springframework.core.convert.converter.Converter<Date, OffsetDateTime>() {
+        converters.add(new Converter<Date, OffsetDateTime>() {
             @Override public OffsetDateTime convert(Date source) { return OffsetDateTime.ofInstant(source.toInstant(), ZoneOffset.UTC); }
         });
 
@@ -59,16 +60,11 @@ public class MongoConfig {
         };
     }
 
-    /**
-     * ReactiveMongoTemplate using the reactive factory and the (auto-configured) converter.
-     * Spring Boot provides both when you have spring-boot-starter-data-mongodb-reactive on the classpath
-     * and spring.data.mongodb.uri is configured.
-     */
     @Bean
     @Primary
-    public ReactiveMongoTemplate reactiveMongoTemplate(ReactiveMongoDatabaseFactory reactiveFactory,
-                                                       MappingMongoConverter converter) {
-        return new ReactiveMongoTemplate(reactiveFactory, converter);
+    public MongoTemplate mongoTemplate(MongoDatabaseFactory reactiveFactory,
+                                       MappingMongoConverter converter) {
+        return new MongoTemplate(reactiveFactory, converter);
     }
 
 }

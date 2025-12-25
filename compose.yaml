@@ -7,7 +7,7 @@ services:
       - "8090:8090"             # host:container
     environment:
       SERVER_PORT: 8090
-      SPRING_DATA_MONGODB_URI: mongodb+srv://mongo:27017/usersdb
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/usersdb
       ISSUER_URI: http://keycloak:8080/realms/chat-local
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8088/realms/chat-local/protocol/openid-connect/certs
       SPRING_APPLICATION_NAME: users-service
