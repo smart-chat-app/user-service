@@ -5,12 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -43,7 +41,7 @@ public class UserRepository {
                 Criteria.where("username").is(value),
                 Criteria.where("displayName").is(value)
         ));
-        return mongoTemplate.exists(query, Boolean.class);
+        return mongoTemplate.exists(query, Users.class);
     }
 
     public void updateUser(String userId, Users user) {

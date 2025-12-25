@@ -30,7 +30,7 @@ public class NotificationService {
         this.notificationPersistance = notificationPersistance;
     }
 
-    public void sendNotification(Notification notification) throws UsernameNotFoundException, UserNotFoundException {
+    public void sendNotification(Notification notification) throws UsernameNotFoundException {
         //Also, verify that the sender username is associated with sender user id
         Optional.ofNullable(notification.getReceiverUsername())
                 .map(String::trim)
@@ -42,7 +42,7 @@ public class NotificationService {
     }
 
     public List<Notification> retrieveUserNotification(String userId) throws UserNotFoundException {
-        if(null == userId || userId.isEmpty()) throw new UserNotFoundException();
+        if(null == userId || userId.isBlank()) throw new UserNotFoundException();
         return notificationPersistance.retrieveNotificationByUserId(userId)
                 .stream()
                 .map(NotificationMapper::mapDTO)
