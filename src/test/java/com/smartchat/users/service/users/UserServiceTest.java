@@ -89,7 +89,7 @@ class UserServiceTest {
                 .bio("bio")
                 .build();
 
-        when(contactPersistence.getContactsByAssociateUsId(userId)).thenReturn(List.of(contact));
+        when(contactPersistence.getContactsByAssociateUsId(anyString())).thenReturn(List.of(contact));
         when(userPersistance.getCurrentUserInformationFromUserId(userId)).thenReturn(Optional.of(user));
 
         User result = service.retrieveCurrentUserInformations();
