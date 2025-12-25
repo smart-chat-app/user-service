@@ -17,19 +17,16 @@ public class Utils {
      * Throws 401 if missing.
      */
     public static String getUserId() {
-        try {
-            return getHeaderUserId().toString();
-        }catch(Exception e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing X-User-Id header");
-        }
+        return getHeaderUserId()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing X-User-Id header"));
     }
 
     private static Optional<String> getHeaderUserId() {
         return Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .map(attribute -> attribute.getRequest().getHeader(ContextConstants.USER_ID))
-                .map(Utils::validateUserId)
-                .orElseThrow(() -> new RuntimeException("Invalid userId"));
+                .map(attr -> attr.getRequest().getHeader(ContextConstants.USER_ID))
+                .flatMap(Utils::validateUserId);
     }
+
 
     private static Optional<String> validateUserId(String userId) {
         try {
