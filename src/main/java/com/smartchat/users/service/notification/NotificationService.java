@@ -32,17 +32,17 @@ public class NotificationService {
 
     public void sendNotification(Notification notification) throws UsernameNotFoundException, UserNotFoundException {
         //Also, verify that the sender username is associated with sender user id
-        Optional.of(notification.getReceiverUsername())
+        Optional.ofNullable(notification.getReceiverUsername())
+                .map(String::trim)
                 .filter(un -> !un.isEmpty())
-                .map(userPersistance::getUser)
+                .flatMap(userPersistance::getUser)
                 .orElseThrow(UsernameNotFoundException::new);
         log.info("Sending notification");
         producer.pushNotification(notification);
     }
 
     public List<Notification> retrieveUserNotification(String userId) throws UserNotFoundException {
-        Optional.of(userId)
-                .orElseThrow(UserNotFoundException::new);
+        if(null == userId || userId.isEmpty()) throw new UserNotFoundException();
         return notificationPersistance.retrieveNotificationByUserId(userId)
                 .stream()
                 .map(NotificationMapper::mapDTO)

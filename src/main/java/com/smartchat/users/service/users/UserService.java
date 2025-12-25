@@ -37,11 +37,10 @@ public class UserService {
 
     public void createNewUser(User user) throws UsernameNotFoundException, ExistingUserException {
         var username = extractUsername(user);
-        if (!checkUserExistance(username)) {
-            producer.pushCreateNewUserEvent(user);
-        } else {
+        if (checkUserExistance(username)) {
             throw new ExistingUserException();
         }
+        producer.pushCreateNewUserEvent(user);
     }
 
     public User retrieveCurrentUserInformations() throws UserNotFoundException {
