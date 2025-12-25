@@ -166,12 +166,12 @@
             <artifactId>mongodb</artifactId>
             <scope>test</scope>
         </dependency>
-       <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.mapstruct/mapstruct &ndash;&gt;
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.6.3</version>
-        </dependency>-->
+        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.mapstruct/mapstruct &ndash;&gt;
+         <dependency>
+             <groupId>org.mapstruct</groupId>
+             <artifactId>mapstruct</artifactId>
+             <version>1.6.3</version>
+         </dependency>-->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
@@ -226,20 +226,23 @@
                 </executions>
             </plugin>
 
-           <!-- <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>1.6.3</version>
-                        </path>
-                    </annotationProcessorPaths>
+                    <source>21</source>
+                    <target>21</target>
+                    <compilerArgs>--enable-preview</compilerArgs>
+                    <!--   <annotationProcessorPaths>
+                           <path>
+                               <groupId>org.mapstruct</groupId>
+                               <artifactId>mapstruct-processor</artifactId>
+                               <version>1.6.3</version>
+                           </path>
+                       </annotationProcessorPaths>-->
                 </configuration>
-            </plugin>-->
+            </plugin>
 
             <!-- OpenAPI generator (plugin; not a dependency) -->
             <plugin>
@@ -269,17 +272,12 @@
                                 <!-- Turn on Lombok -->
                                 <useLombok>true</useLombok>
 
-                         <!--       &lt;!&ndash; Add constructor annotations to all models &ndash;&gt;
-                                <additionalModelTypeAnnotations>
-                                    @lombok.AllArgsConstructor
-                                </additionalModelTypeAnnotations>-->
+                                <!--       &lt;!&ndash; Add constructor annotations to all models &ndash;&gt;
+                                       <additionalModelTypeAnnotations>
+                                           @lombok.AllArgsConstructor
+                                       </additionalModelTypeAnnotations>-->
                                 <!-- NOTE: no <reactive>true</reactive> since you want non-reactive APIs -->
                             </configOptions>
-                            <!-- Optional: generate into target to avoid polluting sources -->
-                            <!--
-                            <outputDir>${project.build.directory}/generated-sources/openapi</outputDir>
-                            <addCompileSourceRoot>true</addCompileSourceRoot>
-                            -->
                         </configuration>
                     </execution>
                     <execution>
@@ -288,7 +286,9 @@
                         </goals>
                         <id>user-message</id>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/messages-model/openapi_user_message_inbound.yaml</inputSpec>
+                            <inputSpec>
+                                ${project.basedir}/src/main/resources/messages-model/openapi_user_message_inbound.yaml
+                            </inputSpec>
                             <generatorName>spring</generatorName>
                             <apiPackage>com.smartchat.users.message</apiPackage>
                             <modelPackage>com.smartchat.users.message.model</modelPackage>
@@ -324,7 +324,9 @@
                         </goals>
                         <id>user-message-outbound</id>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/messages-model/openapi_outbound_user_message.yaml</inputSpec>
+                            <inputSpec>
+                                ${project.basedir}/src/main/resources/messages-model/openapi_outbound_user_message.yaml
+                            </inputSpec>
                             <generatorName>spring</generatorName>
                             <apiPackage>com.smartchat.users.message</apiPackage>
                             <modelPackage>com.smartchat.users.message.model</modelPackage>
@@ -358,9 +360,11 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                        <id>notification-outbound</id>
+                        <id>notificationEntity-outbound</id>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/messages-model/openapi_notification_message.yaml</inputSpec>
+                            <inputSpec>
+                                ${project.basedir}/src/main/resources/messages-model/openapi_notification_message.yaml
+                            </inputSpec>
                             <generatorName>spring</generatorName>
                             <apiPackage>com.smartchat.users.message</apiPackage>
                             <modelPackage>com.smartchat.users.message.model</modelPackage>
@@ -394,9 +398,11 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                        <id>notification-inbound</id>
+                        <id>notificationEntity-inbound</id>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/messages-model/openapi_notificaton_message_inbound.yaml</inputSpec>
+                            <inputSpec>
+                                ${project.basedir}/src/main/resources/messages-model/openapi_notificaton_message_inbound.yaml
+                            </inputSpec>
                             <generatorName>spring</generatorName>
                             <apiPackage>com.smartchat.users.message</apiPackage>
                             <modelPackage>com.smartchat.users.message.model</modelPackage>
@@ -419,11 +425,6 @@
                                        </additionalModelTypeAnnotations>-->
                                 <!-- NOTE: no <reactive>true</reactive> since you want non-reactive APIs -->
                             </configOptions>
-                            <!-- Optional: generate into target to avoid polluting sources -->
-                            <!--
-                            <outputDir>${project.build.directory}/generated-sources/openapi</outputDir>
-                            <addCompileSourceRoot>true</addCompileSourceRoot>
-                            -->
                         </configuration>
                     </execution>
                 </executions>

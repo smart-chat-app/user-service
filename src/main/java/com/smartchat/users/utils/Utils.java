@@ -7,6 +7,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 public class Utils {
@@ -16,20 +18,23 @@ public class Utils {
      * Throws 401 if missing.
      */
     public static String getUserId() {
-        String userId = getHeaderUserId();
-        if (userId == null || userId.isBlank()) {
-            log.error("Missing X-User-Id header");
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing X-User-Id header");
-        }
-        return userId;
+        return getHeaderUserId()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing X-User-Id header"));
     }
 
-    private static String getHeaderUserId() {
-        var attribute = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (Objects.isNull(attribute)) {
-            //TODO throw an exception instead of null
-            return null;
+    private static Optional<String> getHeaderUserId() {
+        return Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .map(attribute -> attribute.getRequest().getHeader(ContextConstants.USER_ID))
+                .map(Utils::validateUserId)
+                .orElseThrow(() -> new RuntimeException("Invalid userId"));
+    }
+
+    private static Optional<String> validateUserId(String userId) {
+        try {
+            UUID.fromString(userId);
+            return Optional.of(userId);
+        } catch (Exception e) {
+            return Optional.empty();
         }
-        return attribute.getRequest().getHeader(ContextConstants.USER_ID); // e.g. "X-User-Id"
     }
 }

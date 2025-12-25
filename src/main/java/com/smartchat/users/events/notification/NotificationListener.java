@@ -3,14 +3,12 @@ package com.smartchat.users.events.notification;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartchat.users.mapper.ContactMapper;
-import com.smartchat.users.mapper.NotificationMapper;
 import com.smartchat.users.message.model.NotificationInboundMessage;
 import com.smartchat.users.message.model.NotificationInboundPayload;
 import com.smartchat.users.persistance.notifications.NotificationPersistance;
-import com.smartchat.users.persistance.notifications.model.Notification;
-import com.smartchat.users.persistance.user.ContactPersistance;
+import com.smartchat.users.persistance.notifications.model.NotificationEntity;
+import com.smartchat.users.persistance.user.ContactPersistence;
 import com.smartchat.users.service.users.UserService;
-import com.smartchat.users.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -25,18 +23,18 @@ import static com.smartchat.users.utils.ContextConstants.NOTIFICATION_TOPIC_ACCE
 public class NotificationListener {
 
     private final ObjectMapper mapper;
-    private final ContactPersistance contactPersistance;
+    private final ContactPersistence contactPersistence;
     private final NotificationPersistance notificationPersistance;
     private final UserService userService;
 
 
     @Autowired
     public NotificationListener(ObjectMapper mapper,
-                                ContactPersistance contactPersistance,
+                                ContactPersistence contactPersistence,
                                 NotificationPersistance notificationPersistance,
                                 UserService userService) {
         this.mapper = mapper;
-        this.contactPersistance = contactPersistance;
+        this.contactPersistence = contactPersistence;
         this.notificationPersistance = notificationPersistance;
         this.userService = userService;
     }
@@ -45,9 +43,9 @@ public class NotificationListener {
     public void saveNotification(String message){
         NotificationInboundMessage msg = mapMessage(message);
         NotificationInboundPayload payload = msg.getPayload();
-        String userId = Utils.getUserId();
+        var userId = msg.getPayload().getSenderUserId();
         if(payload.getReceiverUserId().equals(userId)){
-            Notification not = map(payload);
+            NotificationEntity not = map(payload);
             notificationPersistance.addNotificaion(not);
         }
     }
@@ -56,7 +54,7 @@ public class NotificationListener {
     public void addContacts(String message) {
         NotificationInboundMessage msg = mapMessage(message);
         log.info("Message incoming {}", message);
-        contactPersistance.saveContact(ContactMapper.mapContact(msg.getPayload()));
+        contactPersistence.saveContact(ContactMapper.mapContact(msg.getPayload()));
     }
 
     private NotificationInboundMessage mapMessage(String message) {

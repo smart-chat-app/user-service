@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @AllArgsConstructor
 @Document(collection = "notification")
-public class Notification {
+public class NotificationEntity {
     private String notificationId;
     private String sender;
     private String userId;

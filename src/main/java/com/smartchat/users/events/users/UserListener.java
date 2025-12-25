@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class CreateUserListener {
+public class UserListener {
 
     private final UserPersistance persistance;
     private final ObjectMapper mapper;
     private static final String TOPIC = "user.created";
 
     @Autowired
-    public CreateUserListener(UserPersistance persistance, ObjectMapper mapper) {
+    public UserListener(UserPersistance persistance, ObjectMapper mapper) {
         this.persistance = persistance;
         this.mapper = mapper;
     }

@@ -1,20 +1,20 @@
 package com.smartchat.users.service.users;
 
-import com.smartchat.users.events.users.CreateUserProducer;
+import com.smartchat.users.events.users.UserProducer;
+import com.smartchat.users.exceptions.UserNotFoundException;
+import com.smartchat.users.exceptions.UsernameNotFoundException;
 import com.smartchat.users.mapper.UserMapper;
 import com.smartchat.users.model.Contacts;
 import com.smartchat.users.model.User;
 import com.smartchat.users.model.UserPublic;
-import com.smartchat.users.persistance.user.ContactPersistance;
+import com.smartchat.users.persistance.user.ContactPersistence;
 import com.smartchat.users.persistance.user.UserPersistance;
-import com.smartchat.users.persistance.user.model.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 import static com.smartchat.users.utils.Utils.getUserId;
 
@@ -23,66 +23,71 @@ import static com.smartchat.users.utils.Utils.getUserId;
 public class UserService {
 
     private final UserPersistance userPersistance;
-    private final ContactPersistance contactPersistance;
+    private final ContactPersistence contactPersistence;
 
-    private final CreateUserProducer producer;
+    private final UserProducer producer;
 
     @Autowired
-    public UserService(UserPersistance userPersistance, CreateUserProducer producer, ContactPersistance contactPersistance) {
+    public UserService(UserPersistance userPersistance, ContactPersistence contactPersistence, UserProducer producer) {
         this.userPersistance = userPersistance;
+        this.contactPersistence = contactPersistence;
         this.producer = producer;
-        this.contactPersistance = contactPersistance;
     }
 
-    public void createNewUser(User user){
-        String username = user.getUsername();
-        if(username.isEmpty()){
-            log.warn("empty username");
-            throw new RuntimeException("Empty username");
-        }
-        Users users = userPersistance.getUser(username);
-
-        if(Objects.nonNull(users)){
-            throw new RuntimeException("User existing");
-        } else {
+    public void createNewUser(User user) throws UsernameNotFoundException {
+        var username = extractUsername(user);
+        if (checkUserExistance(username)) {
             producer.pushCreateNewUserEvent(user);
+        } else {
+            throw new RuntimeException("User already exists");
         }
     }
 
-    public User getMySelf(){
-        String userId = getUserId();
-        List<Contacts> contactsList = getListContacts(userId);
-        User user = userPersistance.getMyselfFromUserId(userId);
+    public User retrieveCurrentUserInformations() throws UserNotFoundException {
+        var userId = getUserId();
+        var contactsList = getListContacts(userId);
+
+        User user = userPersistance
+                .getCurrentUserInformationFromUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
         user.setContacts(contactsList);
         return user;
     }
 
-    public UserPublic searchUser(String username){
-        UserPublic user =  userPersistance.searchUserByUsername(username)
+
+    public UserPublic searchUser(String username) throws UserNotFoundException {
+        return userPersistance.searchUserByUsername(username)
                 .map(UserMapper::mapDocument)
                 .map(UserMapper::maUserPublic)
-                .block(Duration.ofSeconds(3));
-
-        if(Objects.isNull(user)){
-            throw new RuntimeException("This user doesn't exists");
-        }
-        return user;
+                .orElseThrow(() -> new UserNotFoundException("User Not found"));
     }
 
-    public void updateUser(User user){
-        String userId = getUserId();
-        User userToUpdate = userPersistance.getMyselfFromUserId(userId);
-        if(Objects.isNull(userToUpdate)){
-            throw new RuntimeException("Impossible to update the user because non existant");
+    public void updateUser(User user) throws UserNotFoundException {
+        var userId = getUserId();
+        try {
+            userPersistance.getCurrentUserInformationFromUserId(userId)
+                    .orElseThrow();
+            userPersistance.updateUser(userId, UserMapper.mapResponse(user));
+        } catch (RuntimeException e) {
+            throw new UserNotFoundException("User not found");
         }
-        userPersistance.updateUser(userId, UserMapper.mapResponse(user));
     }
 
-    private List<Contacts> getListContacts(String userId){
-        return contactPersistance.getContactsByAssociateUsId(userId)
+    private List<Contacts> getListContacts(String userId) {
+        return contactPersistence.getContactsByAssociateUsId(userId)
                 .stream()
                 .map(UserMapper::mapContact)
                 .toList();
+    }
+
+    private Boolean checkUserExistance(String username) {
+        return userPersistance.checkUserExistence(username);
+    }
+
+    private String extractUsername(User user) throws UsernameNotFoundException {
+        return Optional.of(user.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
     }
 
 }

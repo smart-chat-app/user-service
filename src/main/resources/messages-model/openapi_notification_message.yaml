@@ -48,6 +48,8 @@ components:
       type: object
       description: Actual notification content for friendship events.
       properties:
+        senderUserId:
+          type: string
         senderUsername:
           type: string
           example: "alex_bjj"
@@ -55,6 +57,7 @@ components:
           type: string
           example: "marco_boxer"
       required:
+        - senderUserId
         - senderUsername
         - receiverUsername
 

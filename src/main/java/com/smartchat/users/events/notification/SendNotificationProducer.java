@@ -48,7 +48,8 @@ public class SendNotificationProducer {
         NotificationHeader header = NotificationHeader.builder()
                 .eventId(UUID.randomUUID())
                 .build();
-        NotificationPayload payload = NotificationPayload.builder() //TODO Add senderUserId in the payload
+        NotificationPayload payload = NotificationPayload.builder()
+                .senderUserId(notification.getUserId())
                 .senderUsername(notification.getSenderUsername())
                 .receiverUsername(notification.getReceiverUsername())
                 .build();

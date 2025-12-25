@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartchat.users.message.model.UserMessage;
 import com.smartchat.users.message.model.UserMessageHeader;
 import com.smartchat.users.message.model.UserMessagePayload;
+import com.smartchat.users.metrics.MeterMetrics;
 import com.smartchat.users.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,32 +18,34 @@ import java.util.Objects;
 
 @Slf4j
 @Component
-public class CreateUserProducer {
+public class UserProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final static String TOPIC = "user.created";
     private final static String DLQ_TOPIC = "user.created.dlq";
 
     private final ObjectMapper mapper;
+    private final MeterMetrics metrics;
 
     @Autowired
-    public CreateUserProducer(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper mapper) {
+    public UserProducer(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper mapper, MeterMetrics metrics) {
         this.kafkaTemplate = kafkaTemplate;
         this.mapper = mapper;
+        this.metrics = metrics;
     }
-
 
     public void pushCreateNewUserEvent(User user) {
         Objects.requireNonNull(user, "user must not be null");
-
         String json = mapMessage(user);
         log.info("json {}", json);
         try {
             log.info("Sending message for userId {}", user.getUserId());
             kafkaTemplate.send(TOPIC, user.getUserId(), json);
+            metrics.incrementUserSuccessfulMessages();
         } catch (Exception e) {
             log.error("Problem to send the message - sent to DLQ{}", e.getMessage());
             kafkaTemplate.send(DLQ_TOPIC, user.getUserId(), json);
+            metrics.incrementUserFailedMessages();
         }
     }
 
@@ -67,10 +70,9 @@ public class CreateUserProducer {
                         .username(user.getUsername())
                         .displayName(user.getDisplayName())
                         .bio(user.getBio() != null && user.getBio().isPresent() ? user.getBio().get() : null)
-                        .avatarUrl(URI.create(user.getAvatarUrl() != null && user.getAvatarUrl().isPresent()
-                                ? user.getAvatarUrl().get().toString() : null))
-                         .createdAt(OffsetDateTime.now())
-                         .updatedAt(OffsetDateTime.now())
+                        .avatarUrl(user.getAvatarUrl() != null ? URI.create(user.getAvatarUrl().get().toString()) : null)
+                        .createdAt(OffsetDateTime.now())
+                        .updatedAt(OffsetDateTime.now())
                         .build())
                 .build();
     }
