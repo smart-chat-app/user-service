@@ -1,7 +1,8 @@
 package com.smartchat.users.service.notification;
 
-import com.smartchat.users.dto.notification.NotificationDTO;
 import com.smartchat.users.events.notification.SendNotificationProducer;
+import com.smartchat.users.exceptions.UserNotFoundException;
+import com.smartchat.users.exceptions.UsernameNotFoundException;
 import com.smartchat.users.mapper.NotificationMapper;
 import com.smartchat.users.model.Notification;
 import com.smartchat.users.persistance.notifications.NotificationPersistance;
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 
 @Slf4j
@@ -29,22 +30,19 @@ public class NotificationService {
         this.notificationPersistance = notificationPersistance;
     }
 
-    public void sendNotification(Notification notification){
+    public void sendNotification(Notification notification) throws UsernameNotFoundException, UserNotFoundException {
         //Also, verify that the sender username is associated with sender user id
-        if(notification.getReceiverUsername().isBlank()){
-            throw new RuntimeException("username cannot be empty");
-        }
-        userPersistance.getUser(notification.getReceiverUsername())
-                .orElseThrow(() -> new RuntimeException("No user found by this username"));
-
+        Optional.ofNullable(notification.getReceiverUsername())
+                .map(String::trim)
+                .filter(un -> !un.isEmpty())
+                .flatMap(userPersistance::getUser)
+                .orElseThrow(UsernameNotFoundException::new);
         log.info("Sending notification");
         producer.pushNotification(notification);
     }
 
-    public List<Notification> retrieveUserNotification(String userId){
-        if(Objects.isNull(userId) || userId.isBlank()){
-            throw new RuntimeException("UserId is mandatory");
-        }
+    public List<Notification> retrieveUserNotification(String userId) throws UserNotFoundException {
+        if(null == userId || userId.isEmpty()) throw new UserNotFoundException();
         return notificationPersistance.retrieveNotificationByUserId(userId)
                 .stream()
                 .map(NotificationMapper::mapDTO)

@@ -43,7 +43,7 @@ public class UserRepository {
                 Criteria.where("username").is(value),
                 Criteria.where("displayName").is(value)
         ));
-        return mongoTemplate.findOne(query, Boolean.class);
+        return mongoTemplate.exists(query, Boolean.class);
     }
 
     public void updateUser(String userId, Users user) {

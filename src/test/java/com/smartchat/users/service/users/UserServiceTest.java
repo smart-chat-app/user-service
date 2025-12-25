@@ -1,6 +1,7 @@
 package com.smartchat.users.service.users;
 
 import com.smartchat.users.events.users.UserProducer;
+import com.smartchat.users.exceptions.ExistingUserException;
 import com.smartchat.users.exceptions.UserNotFoundException;
 import com.smartchat.users.exceptions.UsernameNotFoundException;
 import com.smartchat.users.model.Contacts;
@@ -48,11 +49,11 @@ class UserServiceTest {
     }
 
     @Test
-    void createNewUserPublishesEventWhenUserDoesNotExist() throws UsernameNotFoundException {
+    void createNewUserPublishesEventWhenUserDoesNotExist() throws UsernameNotFoundException, ExistingUserException {
         User user = new User();
         user.setUsername("alex");
 
-        when(userPersistance.checkUserExistence("alex")).thenReturn(true);
+        when(userPersistance.checkUserExistence("alex")).thenReturn(false);
 
         service.createNewUser(user);
 
@@ -60,15 +61,14 @@ class UserServiceTest {
     }
 
     @Test
-    void createNewUserThrowsWhenUserAlreadyExists() {
+    void createNewUserThrowsWhenUserAlreadyExists() throws ExistingUserException, UsernameNotFoundException {
         User user = new User();
         user.setUsername("alex");
-
-        when(userPersistance.checkUserExistence("alex")).thenReturn(false);
+        service.createNewUser(user);
+        when(userPersistance.checkUserExistence("alex")).thenReturn(true);
 
         assertThatThrownBy(() -> service.createNewUser(user))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("User already exists");
+                .isInstanceOf(ExistingUserException.class);
     }
 
     @Test
