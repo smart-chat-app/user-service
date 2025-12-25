@@ -45,8 +45,12 @@ public class UserService {
 
     public User retrieveCurrentUserInformations() throws UserNotFoundException {
         var userId = getUserId();
+        log.info("Retrieving user informations for userid {}", userId);
         var contactsList = getListContacts(userId);
 
+        if(userId.isBlank()){
+            throw new RuntimeException("Username must be populated");
+        }
         User user = userPersistance
                 .getCurrentUserInformationFromUserId(userId)
                 .orElseThrow(UserNotFoundException::new);

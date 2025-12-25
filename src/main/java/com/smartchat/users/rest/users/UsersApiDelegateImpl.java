@@ -38,6 +38,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
             service.createNewUser(user);
             return ResponseEntity.ok(PresignResponse.builder()
                     .method(HttpStatus.CREATED.name())
+                            .message(user.getUserId())
                     .build());
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -65,7 +66,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
             UserPublic user = service.searchUser(id);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -87,17 +88,30 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
 
     @Override
     public ResponseEntity<PresignResponse> sendContactNotification(String senderuuId,
-                                                                   Notification notification) throws UsernameNotFoundException, UserNotFoundException {
-        notification.setUserId(senderuuId);
-        notificationService.sendNotification(notification);
-        return ResponseEntity.ok(PresignResponse.builder()
-                .method(HttpStatus.OK.name())
-                .build());
+                                                                   Notification notification) {
+        try {
+            notification.setUserId(senderuuId);
+            notificationService.sendNotification(notification);
+            return ResponseEntity.ok(PresignResponse.builder()
+                    .method(HttpStatus.OK.name())
+                    .build());
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.badRequest()
+                    .body(PresignResponse.builder()
+                            .message(e.getMessage())
+                            .method(HttpStatus.BAD_REQUEST.name())
+                            .build());
+        }
     }
 
     @Override
-    public ResponseEntity<List<Notification>> showAllNotifications(String senderId) throws UserNotFoundException {
-        List<Notification> notifications = notificationService.retrieveUserNotification(senderId);
-        return ResponseEntity.ok(notifications);
+    public ResponseEntity<List<Notification>> showAllNotifications(String senderId) {
+        try {
+            List<Notification> notifications = notificationService.retrieveUserNotification(senderId);
+            return ResponseEntity.ok(notifications);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest()
+                    .body(List.of());
+        }
     }
 }

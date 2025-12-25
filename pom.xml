@@ -59,12 +59,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Keep WebFlux on classpath (allowed even in servlet mode) -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>
-
         <!-- Security + JWT resource server (versions managed by Boot) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -75,10 +69,10 @@
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
 
-        <!-- Data: Reactive MongoDB -->
+        <!-- Data: MongoDB -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
 
         <!-- Actuator + Bean Validation -->
@@ -144,11 +138,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -271,12 +260,6 @@
 
                                 <!-- Turn on Lombok -->
                                 <useLombok>true</useLombok>
-
-                                <!--       &lt;!&ndash; Add constructor annotations to all models &ndash;&gt;
-                                       <additionalModelTypeAnnotations>
-                                           @lombok.AllArgsConstructor
-                                       </additionalModelTypeAnnotations>-->
-                                <!-- NOTE: no <reactive>true</reactive> since you want non-reactive APIs -->
                             </configOptions>
                         </configuration>
                     </execution>
@@ -304,18 +287,7 @@
 
                                 <!-- Turn on Lombok -->
                                 <useLombok>true</useLombok>
-
-                                <!--       &lt;!&ndash; Add constructor annotations to all models &ndash;&gt;
-                                       <additionalModelTypeAnnotations>
-                                           @lombok.AllArgsConstructor
-                                       </additionalModelTypeAnnotations>-->
-                                <!-- NOTE: no <reactive>true</reactive> since you want non-reactive APIs -->
                             </configOptions>
-                            <!-- Optional: generate into target to avoid polluting sources -->
-                            <!--
-                            <outputDir>${project.build.directory}/generated-sources/openapi</outputDir>
-                            <addCompileSourceRoot>true</addCompileSourceRoot>
-                            -->
                         </configuration>
                     </execution>
                     <execution>
@@ -342,18 +314,7 @@
 
                                 <!-- Turn on Lombok -->
                                 <useLombok>true</useLombok>
-
-                                <!--       &lt;!&ndash; Add constructor annotations to all models &ndash;&gt;
-                                       <additionalModelTypeAnnotations>
-                                           @lombok.AllArgsConstructor
-                                       </additionalModelTypeAnnotations>-->
-                                <!-- NOTE: no <reactive>true</reactive> since you want non-reactive APIs -->
                             </configOptions>
-                            <!-- Optional: generate into target to avoid polluting sources -->
-                            <!--
-                            <outputDir>${project.build.directory}/generated-sources/openapi</outputDir>
-                            <addCompileSourceRoot>true</addCompileSourceRoot>
-                            -->
                         </configuration>
                     </execution>
                     <execution>
@@ -380,18 +341,7 @@
 
                                 <!-- Turn on Lombok -->
                                 <useLombok>true</useLombok>
-
-                                <!--       &lt;!&ndash; Add constructor annotations to all models &ndash;&gt;
-                                       <additionalModelTypeAnnotations>
-                                           @lombok.AllArgsConstructor
-                                       </additionalModelTypeAnnotations>-->
-                                <!-- NOTE: no <reactive>true</reactive> since you want non-reactive APIs -->
                             </configOptions>
-                            <!-- Optional: generate into target to avoid polluting sources -->
-                            <!--
-                            <outputDir>${project.build.directory}/generated-sources/openapi</outputDir>
-                            <addCompileSourceRoot>true</addCompileSourceRoot>
-                            -->
                         </configuration>
                     </execution>
                     <execution>
@@ -418,12 +368,6 @@
 
                                 <!-- Turn on Lombok -->
                                 <useLombok>true</useLombok>
-
-                                <!--       &lt;!&ndash; Add constructor annotations to all models &ndash;&gt;
-                                       <additionalModelTypeAnnotations>
-                                           @lombok.AllArgsConstructor
-                                       </additionalModelTypeAnnotations>-->
-                                <!-- NOTE: no <reactive>true</reactive> since you want non-reactive APIs -->
                             </configOptions>
                         </configuration>
                     </execution>

@@ -5,8 +5,10 @@ import com.smartchat.users.exceptions.UserNotFoundException;
 import com.smartchat.users.exceptions.UsernameNotFoundException;
 import com.smartchat.users.mapper.NotificationMapper;
 import com.smartchat.users.model.Notification;
+import com.smartchat.users.model.User;
 import com.smartchat.users.persistance.notifications.NotificationPersistance;
 import com.smartchat.users.persistance.user.UserPersistance;
+import com.smartchat.users.persistance.user.model.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,14 +33,18 @@ public class NotificationService {
     }
 
     public void sendNotification(Notification notification) throws UsernameNotFoundException {
-        //Also, verify that the sender username is associated with sender user id
-        Optional.ofNullable(notification.getReceiverUsername())
+
+        Users receiver = Optional.ofNullable(notification.getReceiverUsername())
                 .map(String::trim)
                 .filter(un -> !un.isEmpty())
                 .flatMap(userPersistance::getUser)
                 .orElseThrow(UsernameNotFoundException::new);
-        log.info("Sending notification");
+
+        String receiverUserId = receiver.getUserIdKey().getUserId();
+        notification.setReceiverUserId(receiverUserId);
         producer.pushNotification(notification);
+
+        log.info("Notification sent to userId={}", receiverUserId);
     }
 
     public List<Notification> retrieveUserNotification(String userId) throws UserNotFoundException {
