@@ -1,6 +1,7 @@
 package com.smartchat.users.service.users;
 
 import com.smartchat.users.events.users.UserProducer;
+import com.smartchat.users.exceptions.ExistingUserException;
 import com.smartchat.users.exceptions.UserNotFoundException;
 import com.smartchat.users.exceptions.UsernameNotFoundException;
 import com.smartchat.users.mapper.UserMapper;
@@ -34,12 +35,12 @@ public class UserService {
         this.producer = producer;
     }
 
-    public void createNewUser(User user) throws UsernameNotFoundException {
+    public void createNewUser(User user) throws UsernameNotFoundException, ExistingUserException {
         var username = extractUsername(user);
-        if (checkUserExistance(username)) {
+        if (!checkUserExistance(username)) {
             producer.pushCreateNewUserEvent(user);
         } else {
-            throw new RuntimeException("User already exists");
+            throw new ExistingUserException();
         }
     }
 
@@ -49,7 +50,7 @@ public class UserService {
 
         User user = userPersistance
                 .getCurrentUserInformationFromUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         user.setContacts(contactsList);
         return user;
@@ -60,7 +61,7 @@ public class UserService {
         return userPersistance.searchUserByUsername(username)
                 .map(UserMapper::mapDocument)
                 .map(UserMapper::maUserPublic)
-                .orElseThrow(() -> new UserNotFoundException("User Not found"));
+                .orElseThrow(UserNotFoundException::new);
     }
 
     public void updateUser(User user) throws UserNotFoundException {
@@ -70,7 +71,7 @@ public class UserService {
                     .orElseThrow();
             userPersistance.updateUser(userId, UserMapper.mapResponse(user));
         } catch (RuntimeException e) {
-            throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException();
         }
     }
 
@@ -87,7 +88,7 @@ public class UserService {
 
     private String extractUsername(User user) throws UsernameNotFoundException {
         return Optional.of(user.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+                .orElseThrow(UsernameNotFoundException::new);
     }
 
 }

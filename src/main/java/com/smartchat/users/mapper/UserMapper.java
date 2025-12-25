@@ -11,12 +11,13 @@ import com.smartchat.users.persistance.user.model.Users;
 import java.net.URI;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Optional;
 
 public class UserMapper {
     public static Users mapResponse(User user){
         return Users.builder()
-                .bio(user.getBio().get())
-                .avatarUrl(user.getAvatarUrl().get().toString())
+                .bio(checkBio(user))
+                .avatarUrl(checkAvatarUrl(user))
                 .userIdKey(buildUserIdKey(user.getUserId(), user.getUsername()))
                 .displayName(user.getDisplayName())
                 .updatedAt(Instant.now())
@@ -27,8 +28,8 @@ public class UserMapper {
     public static Users mapFromKafka(UserMessageOutboundPayload message){
         return Users.builder()
                 .userIdKey(buildUserIdKey(message.getUserId(), message.getUsername()))
-                .bio(message.getBio().get())
-                .avatarUrl(message.getAvatarUrl().get().toString())
+                .bio(checkBioKafka(message))
+                .avatarUrl(checkAvatarUrlKafka(message))
                 .displayName(message.getDisplayName().get())
                 .createdAt(message.getCreatedAt().toInstant())
                 .updatedAt(message.getUpdatedAt().toInstant())
@@ -69,5 +70,21 @@ public class UserMapper {
                 .userId(userId)
                 .username(username)
                 .build();
+    }
+
+    private static String checkBio(User user){
+        return Optional.ofNullable(user.getBio().isPresent() ? user.getBio().get() : Optional.empty()).toString();
+    }
+
+    private static String checkAvatarUrl(User user){
+        return Optional.ofNullable(user.getAvatarUrl().isPresent() ? user.getAvatarUrl().get() : Optional.empty()).toString();
+    }
+
+    private static String checkBioKafka(UserMessageOutboundPayload user){
+        return Optional.ofNullable(user.getBio().isPresent() ? user.getBio().get() : Optional.empty()).toString();
+    }
+
+    private static String checkAvatarUrlKafka(UserMessageOutboundPayload user){
+        return Optional.ofNullable(user.getAvatarUrl().isPresent() ? user.getAvatarUrl().get() : Optional.empty()).toString();
     }
 }

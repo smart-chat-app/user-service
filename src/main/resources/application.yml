@@ -54,3 +54,8 @@ logging:
     org.springframework.cloud.stream: INFO
     org.springframework.kafka: INFO
     org.springframework.security: WARN
+
+messages:
+  user-not-found: user not found
+  username-not-found: username not found
+  existing-user: user already exists

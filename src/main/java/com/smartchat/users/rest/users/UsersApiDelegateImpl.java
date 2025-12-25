@@ -1,6 +1,8 @@
 package com.smartchat.users.rest.users;
 
 import com.smartchat.users.api.UsersApiDelegate;
+import com.smartchat.users.exceptions.UserNotFoundException;
+import com.smartchat.users.exceptions.UsernameNotFoundException;
 import com.smartchat.users.model.Notification;
 import com.smartchat.users.model.PresignResponse;
 import com.smartchat.users.model.User;
@@ -85,7 +87,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
 
     @Override
     public ResponseEntity<PresignResponse> sendContactNotification(String senderuuId,
-                                                                   Notification notification) {
+                                                                   Notification notification) throws UsernameNotFoundException, UserNotFoundException {
         notification.setUserId(senderuuId);
         notificationService.sendNotification(notification);
         return ResponseEntity.ok(PresignResponse.builder()
@@ -94,7 +96,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
     }
 
     @Override
-    public ResponseEntity<List<Notification>> showAllNotifications(String senderId){
+    public ResponseEntity<List<Notification>> showAllNotifications(String senderId) throws UserNotFoundException {
         List<Notification> notifications = notificationService.retrieveUserNotification(senderId);
         return ResponseEntity.ok(notifications);
     }
