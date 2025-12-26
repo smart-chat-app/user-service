@@ -56,10 +56,13 @@ components:
         receiverUsername:
           type: string
           example: "marco_boxer"
+        receiverUserId:
+          type: string
       required:
         - senderUserId
         - senderUsername
         - receiverUsername
+        - receiverUserId
 
 x-kafka:
   topics:

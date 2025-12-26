@@ -40,21 +40,31 @@ public class NotificationListener {
     }
 
     @KafkaListener(topics = NOTIFICATION_TOPIC, groupId = "notificatioId")
-    public void saveNotification(String message){
-        NotificationInboundMessage msg = mapMessage(message);
-        NotificationInboundPayload payload = msg.getPayload();
-        var userId = msg.getPayload().getSenderUserId();
-        if(payload.getReceiverUserId().equals(userId)){
-            NotificationEntity not = map(payload);
-            notificationPersistance.addNotificaion(not);
+    public void saveNotification(String message) {
+        try {
+            NotificationInboundMessage msg = mapMessage(message);
+            NotificationInboundPayload payload = msg.getPayload();
+            var userId = msg.getPayload().getSenderUserId();
+            if (payload.getReceiverUserId().equals(userId)) {
+                NotificationEntity not = map(payload);
+                notificationPersistance.addNotificaion(not);
+            }
+        } catch (Exception e) {
+            log.error("Error in reading notifcation {}", e.getMessage());
+            throw new RuntimeException();
         }
     }
 
     @KafkaListener(topics = NOTIFICATION_TOPIC_ACCEPTED, groupId = "notificatioId")
     public void addContacts(String message) {
-        NotificationInboundMessage msg = mapMessage(message);
-        log.info("Message incoming {}", message);
-        contactPersistence.saveContact(ContactMapper.mapContact(msg.getPayload()));
+        try {
+            NotificationInboundMessage msg = mapMessage(message);
+            log.info("Message incoming {}", message);
+            contactPersistence.saveContact(ContactMapper.mapContact(msg.getPayload()));
+        } catch (Exception e) {
+            log.error("Error in adding contacts");
+            throw new RuntimeException(e);
+        }
     }
 
     private NotificationInboundMessage mapMessage(String message) {

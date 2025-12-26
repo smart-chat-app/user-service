@@ -17,7 +17,6 @@ public class UserMapper {
     public static Users mapResponse(User user){
         return Users.builder()
                 .bio(checkBio(user))
-                .avatarUrl(checkAvatarUrl(user))
                 .userIdKey(buildUserIdKey(user.getUserId(), user.getUsername()))
                 .displayName(user.getDisplayName())
                 .updatedAt(Instant.now())
@@ -29,7 +28,6 @@ public class UserMapper {
         return Users.builder()
                 .userIdKey(buildUserIdKey(message.getUserId(), message.getUsername()))
                 .bio(checkBioKafka(message))
-                .avatarUrl(checkAvatarUrlKafka(message))
                 .displayName(checkDisplayName(message))
                 .createdAt(message.getCreatedAt().toInstant())
                 .updatedAt(message.getUpdatedAt().toInstant())
@@ -39,7 +37,6 @@ public class UserMapper {
     public static User mapDocument(Users entity){
         return User.builder()
                 .userId(entity.getUserIdKey().getUserId())
-                .avatarUrl(URI.create(Objects.nonNull(entity.getAvatarUrl()) ? entity.getAvatarUrl() : ""))
                 .bio(entity.getBio())
                 .displayName(entity.getDisplayName())
                 .username(entity.getUserIdKey().getUsername())
@@ -61,7 +58,6 @@ public class UserMapper {
                 .bio(user.getBio())
                 .displayName(user.getDisplayName())
                 .username(user.getUsername())
-                .avatarUrl(user.getAvatarUrl())
                 .build();
     }
 
@@ -73,22 +69,14 @@ public class UserMapper {
     }
 
     private static String checkBio(User user){
-        return Optional.ofNullable(user.getBio().isPresent() ? user.getBio().get() : Optional.empty()).toString();
-    }
-
-    private static String checkAvatarUrl(User user){
-        return Optional.ofNullable(user.getAvatarUrl().isPresent() ? user.getAvatarUrl().get() : Optional.empty()).toString();
+        return user.getBio().orElse("");
     }
 
     private static String checkBioKafka(UserMessageOutboundPayload user){
-        return Optional.ofNullable(user.getBio().isPresent() ? user.getBio().get() : Optional.empty()).toString();
-    }
-
-    private static String checkAvatarUrlKafka(UserMessageOutboundPayload user){
-        return Optional.ofNullable(user.getAvatarUrl().isPresent() ? user.getAvatarUrl().get() : Optional.empty()).toString();
+        return user.getBio().orElse("");
     }
 
     private static String checkDisplayName(UserMessageOutboundPayload user){
-        return Optional.ofNullable(user.getDisplayName().isPresent() ? user.getDisplayName().get() : Optional.empty()).toString();
+        return user.getDisplayName().orElse("");
     }
 }

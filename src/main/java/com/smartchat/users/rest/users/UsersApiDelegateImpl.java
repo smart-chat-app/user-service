@@ -38,6 +38,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
             service.createNewUser(user);
             return ResponseEntity.ok(PresignResponse.builder()
                     .method(HttpStatus.CREATED.name())
+                            .message(user.getUserId())
                     .build());
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -65,7 +66,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
             UserPublic user = service.searchUser(id);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
