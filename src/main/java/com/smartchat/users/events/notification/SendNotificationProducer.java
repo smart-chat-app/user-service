@@ -14,13 +14,15 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.smartchat.users.utils.ContextConstants.DLQ_TOPIC;
+import static com.smartchat.users.utils.ContextConstants.NOTIFICATION_TOPIC;
+
 @Slf4j
 @Component
 public class SendNotificationProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final static String NOTIFICATION_TOPIC = "notification.processed";
-    private final static String DLQ_TOPIC = "notification.created.dlq";
+
 
     private final ObjectMapper mapper;
 
