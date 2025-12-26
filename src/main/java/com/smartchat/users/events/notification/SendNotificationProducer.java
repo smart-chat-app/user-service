@@ -19,7 +19,7 @@ import java.util.UUID;
 public class SendNotificationProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final static String NOTIFICATION_TOPIC = "notification.created";
+    private final static String NOTIFICATION_TOPIC = "notification.processed";
     private final static String DLQ_TOPIC = "notification.created.dlq";
 
     private final ObjectMapper mapper;
@@ -52,6 +52,7 @@ public class SendNotificationProducer {
                 .senderUserId(notification.getUserId())
                 .senderUsername(notification.getSenderUsername())
                 .receiverUsername(notification.getReceiverUsername())
+                .receiverUserId(notification.getReceiverUserId())
                 .build();
         return NotificationMessage.builder()
                 .header(header)

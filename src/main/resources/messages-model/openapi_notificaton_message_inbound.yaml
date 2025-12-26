@@ -65,9 +65,7 @@ components:
       required:
         - senderUserId
         - senderUsername
-        - receiverUserId
         - receiverUsername
-        - accepted
 
 x-kafka:
   topics:

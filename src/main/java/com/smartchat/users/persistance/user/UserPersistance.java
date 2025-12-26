@@ -33,7 +33,7 @@ public class UserPersistance {
 
     public Optional<User> getCurrentUserInformationFromUserId(String userId) {
         return userRepository.findByUserId(userId)
-                .flatMap(entity -> Optional.ofNullable(UserMapper.mapDocument(entity)));
+                .map(UserMapper::mapDocument);
     }
 
     public Optional<Users> searchUserByUsername(String username) {

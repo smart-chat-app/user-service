@@ -180,7 +180,7 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-  /users/show/notifications/:
+  /users/show/notifications:
     parameters:
       - name: senderuuId
         in: path
@@ -298,6 +298,8 @@ components:
         senderUsername:
           type: string
         receiverUsername:
+          type: string
+        receiverUserId:
           type: string
 
     UserPublic:

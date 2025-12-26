@@ -24,13 +24,13 @@ public class UserRepository {
     }
 
     public Optional<Users> findByUserId(String userId) {
-        Query query = new Query(Criteria.where("userId").is(userId));
+        Query query = new Query(Criteria.where("_id.userId").is(userId));
         return Optional.ofNullable(mongoTemplate.findOne(query, Users.class));
     }
 
     public Optional<Users> findByUsernameOrDisplayName(String value) {
         Query query = new Query(new Criteria().orOperator(
-                Criteria.where("username").is(value),
+                Criteria.where("_id.username").is(value),
                 Criteria.where("displayName").is(value)
         ));
         return Optional.ofNullable(mongoTemplate.findOne(query, Users.class));
@@ -38,7 +38,7 @@ public class UserRepository {
 
     public Boolean isUserExisting(String value) {
         Query query = new Query(new Criteria().orOperator(
-                Criteria.where("username").is(value),
+                Criteria.where("_id.username").is(value),
                 Criteria.where("displayName").is(value)
         ));
         return mongoTemplate.exists(query, Users.class);
@@ -46,9 +46,8 @@ public class UserRepository {
 
     public void updateUser(String userId, Users user) {
         log.info("User: {}", user.getUserIdKey().getUserId());
-        Query query = new Query(Criteria.where("userId").is(userId));
+        Query query = new Query(Criteria.where("_id.userId").is(userId));
         Update update = new Update();
-        update.set("username", user.getUserIdKey().getUsername());
         update.set("displayName", user.getDisplayName());
         update.set("bio", user.getBio());
         update.set("avatarUrl", user.getAvatarUrl());

@@ -1,10 +1,8 @@
 package com.smartchat.users.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -18,7 +16,7 @@ public class Utils {
      */
     public static String getUserId() {
         return getHeaderUserId()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing X-User-Id header"));
+                .orElse("");
     }
 
     private static Optional<String> getHeaderUserId() {
